@@ -4,9 +4,9 @@
 
 [core]
     editor = vim
-{{- if .is_macos }}
+{{- if eq .chezmoi.os "darwin" }}
     autocrlf = input
-{{- else if .is_linux }}
+{{- else if eq .chezmoi.os "linux" }}
     autocrlf = input
 {{- end }}
 
