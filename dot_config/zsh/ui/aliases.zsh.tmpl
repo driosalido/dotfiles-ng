@@ -1,0 +1,61 @@
+# Common Aliases
+
+# Platform-specific aliases
+{{- if .is_macos }}
+# macOS aliases
+alias ls='ls -G'
+alias ll='ls -lG'
+alias la='ls -laG'
+{{- end }}
+
+{{- if .is_linux }}
+# Linux aliases
+alias ls='ls --color=auto'
+alias ll='ls -l --color=auto'
+alias la='ls -la --color=auto'
+{{- end }}
+
+# Common aliases
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ~='cd ~'
+alias /='cd /'
+
+# Shortcuts
+alias h='history'
+alias c='clear'
+alias reload='source ~/.zshrc'
+
+# Git aliases (complement .gitconfig)
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+alias gd='git diff'
+alias gb='git branch'
+alias gco='git checkout'
+alias gst='git stash'
+alias gsp='git stash pop'
+
+# System information
+alias df='df -h'
+alias du='du -h'
+alias free='free -h' 2>/dev/null || alias free='vm_stat'
+alias ps='ps aux'
+
+# Safe operations
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Modern replacements (if available)
+command -v bat >/dev/null && alias cat='bat'
+command -v exa >/dev/null && alias ls='exa' && alias ll='exa -l' && alias la='exa -la'
+command -v fd >/dev/null && alias find='fd'

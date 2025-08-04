@@ -1,0 +1,30 @@
+# Oh My Zsh Configuration
+
+{{- if .has_ohmyzsh }}
+# Oh My Zsh setup (XDG compliant)
+export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+
+# Theme
+ZSH_THEME="robbyrussell"
+
+# Plugins
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    colored-man-pages
+    {{- if .is_macos }}
+    brew
+    macos
+    {{- end }}
+    {{- if .is_linux }}
+    ubuntu
+    {{- end }}
+)
+
+# Load Oh My Zsh
+source "$ZSH/oh-my-zsh.sh"
+{{- else }}
+# Oh My Zsh not installed - using fallback prompt
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
+{{- end }}

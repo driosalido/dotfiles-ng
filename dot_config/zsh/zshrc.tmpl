@@ -1,0 +1,42 @@
+# Modular Zsh configuration for {{ .name }}
+# Platform: {{ if .is_macos }}macOS{{ else if .is_linux }}Linux{{ else }}{{ .chezmoi.os }}{{ end }}
+
+# Define zsh config directory
+ZSH_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+
+# Function to source files safely
+source_if_exists() {
+    [[ -r "$1" ]] && source "$1"
+}
+
+# Function to load all files in a directory
+load_zsh_modules() {
+    local module_dir="$ZSH_CONFIG_DIR/$1"
+    if [[ -d "$module_dir" ]]; then
+        for file in "$module_dir"/*.zsh; do
+            [[ -r "$file" ]] && source "$file"
+        done
+    fi
+}
+
+# Load modules in order
+# 1. Bootstrap - Essential setup that must run first
+load_zsh_modules "bootstrap"
+
+# 2. Config - Core zsh configuration
+load_zsh_modules "config"
+
+# 3. Frameworks - Oh-my-zsh and similar
+load_zsh_modules "frameworks"
+
+# 4. Environment - Variables and paths
+load_zsh_modules "env"
+
+# 5. UI - User interface elements (aliases, functions, prompt)
+load_zsh_modules "ui"
+
+# 6. Local - Machine-specific customizations (loaded last)
+load_zsh_modules "local"
+
+# Load single local file if it exists (for backward compatibility)
+source_if_exists "$HOME/.zshrc.local"
