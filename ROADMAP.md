@@ -11,10 +11,14 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 - [x] **XDG Compliance**: Implementación del XDG Base Directory Specification
 
 ### Shell Configuration
-- [x] **Basic Shell Config**: Configuración básica de zsh
+- [x] **Basic Shell Config**: Configuración básica de zsh (bash eliminado)
+- [x] **Modular Zsh Configuration**: Estructura modular en `~/.config/zsh/` con orden de carga definido
 - [x] **Oh-My-Zsh Integration**: Instalación automática y configuración XDG-compliant
+- [x] **Powerlevel10k Theme**: Instalación automática con configuración personalizada
+- [x] **Nerd Font Installation**: Instalación automática de MesloLGS NF para macOS/Linux
 - [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting
 - [x] **Cross-platform Aliases**: Aliases comunes y específicos por plataforma
+- [x] **XDG-Compliant P10k Config**: Configuración en `~/.config/powerlevel10k/p10k.zsh`
 
 ## 🚧 Próximas Funcionalidades (Prioridad Alta)
 
