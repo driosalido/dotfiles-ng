@@ -1,0 +1,7 @@
+[data]
+    email = "driosalido@gmail.com"
+    name = "David Riosalido"
+
+[git]
+    autoCommit = true
+    autoPush = false
