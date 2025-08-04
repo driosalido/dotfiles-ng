@@ -13,6 +13,9 @@
     personal_email = {{ promptStringOnce . "personal_email" "Enter your personal email" }}
     corporate_email = {{ promptStringOnce . "corporate_email" "Enter your corporate email" }}
     email = {{ if .is_corporate }}{{ .corporate_email }}{{ else }}{{ .personal_email }}{{ end }}
+    
+    # Tool detection
+    has_1password = {{ lookPath "op" | not | not }}
 
 [git]
     autoCommit = true
