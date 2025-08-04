@@ -15,7 +15,7 @@
     email = {{ if .is_corporate }}{{ .corporate_email }}{{ else }}{{ .personal_email }}{{ end }}
     
     # Tool detection
-    has_1password = {{ lookPath "op" | not | not }}
+    has_1password = {{ if lookPath "op" }}true{{ else }}false{{ end }}
 
 [git]
     autoCommit = true
