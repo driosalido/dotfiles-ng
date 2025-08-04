@@ -1,0 +1,78 @@
+# Bash configuration for {{ .name }}
+# Platform: {{ if .is_macos }}macOS{{ else if .is_linux }}Linux{{ else }}{{ .chezmoi.os }}{{ end }}
+
+# History configuration
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+
+# Basic options
+shopt -s checkwinsize  # Check window size after each command
+shopt -s globstar      # Enable ** globbing
+shopt -s cdspell       # Correct minor spelling errors in cd
+
+# Platform-specific PATH and configurations
+{{- if .is_macos }}
+# macOS specific settings
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# macOS aliases
+alias ls='ls -G'
+alias ll='ls -lG'
+alias la='ls -laG'
+{{- end }}
+
+{{- if .is_linux }}
+# Linux specific settings
+export PATH="/usr/local/bin:$PATH"
+
+# Linux aliases
+alias ls='ls --color=auto'
+alias ll='ls -l --color=auto'
+alias la='ls -la --color=auto'
+{{- end }}
+
+# Common aliases
+alias grep='grep --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias h='history'
+alias c='clear'
+alias reload='source ~/.bashrc'
+
+# Git aliases (complement .gitconfig)
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+alias gd='git diff'
+alias gb='git branch'
+alias gco='git checkout'
+
+# Directory navigation
+alias ~='cd ~'
+alias /='cd /'
+
+# Common tools
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias ps='ps aux'
+
+# Editor
+export EDITOR=vim
+export VISUAL=vim
+
+# Enable bash completion
+{{- if .is_macos }}
+[[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+{{- end }}
+{{- if .is_linux }}
+[[ -f /etc/bash_completion ]] && . /etc/bash_completion
+{{- end }}
+
+# Load local customizations if they exist
+[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local
