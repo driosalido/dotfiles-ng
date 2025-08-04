@@ -5,6 +5,10 @@
     # Platform detection
     is_macos = {{ if eq .chezmoi.os "darwin" }}true{{ else }}false{{ end }}
     is_linux = {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
+    
+    # Tool detection
+    has_1password = {{ if lookPath "op" }}true{{ else }}false{{ end }}
+    has_ohmyzsh = {{ if stat (joinPath .chezmoi.homeDir ".oh-my-zsh") }}true{{ else }}false{{ end }}
 
 [git]
     autoCommit = true

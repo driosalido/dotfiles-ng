@@ -1,0 +1,20 @@
+#!/bin/bash
+# Install Oh My Zsh if not already installed
+
+{{- if not .has_ohmyzsh }}
+echo "Installing Oh My Zsh..."
+
+# Install Oh My Zsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Install useful plugins
+echo "Installing zsh-autosuggestions..."
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null || true
+
+echo "Installing zsh-syntax-highlighting..."  
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null || true
+
+echo "Oh My Zsh installation completed!"
+{{- else }}
+echo "Oh My Zsh is already installed, skipping installation."
+{{- end }}

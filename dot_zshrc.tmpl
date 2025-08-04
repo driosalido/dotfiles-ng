@@ -1,6 +1,33 @@
 # Zsh configuration for {{ .name }}
 # Platform: {{ if .is_macos }}macOS{{ else if .is_linux }}Linux{{ else }}{{ .chezmoi.os }}{{ end }}
 
+{{- if .has_ohmyzsh }}
+# Oh My Zsh configuration
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set theme
+ZSH_THEME="robbyrussell"
+
+# Plugins
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    colored-man-pages
+    {{- if .is_macos }}
+    brew
+    macos
+    {{- end }}
+    {{- if .is_linux }}
+    ubuntu
+    {{- end }}
+)
+
+# Load Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+{{- else }}
+# Basic Zsh configuration (without Oh My Zsh)
+
 # History configuration
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
@@ -20,6 +47,10 @@ setopt GLOB_DOTS            # Include dotfiles in globbing
 # Completion system
 autoload -Uz compinit
 compinit
+
+# Basic prompt
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
+{{- end }}
 
 # Platform-specific PATH and configurations
 {{- if .is_macos }}
