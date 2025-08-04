@@ -1,6 +1,18 @@
 [data]
-    email = "driosalido@gmail.com"
     name = "David Riosalido"
+    
+    # Platform detection
+    is_macos = {{ eq .chezmoi.os "darwin" }}
+    is_linux = {{ eq .chezmoi.os "linux" }}
+    
+    # Corporate vs Personal detection for macOS (user prompted)
+    is_corporate = {{ promptBoolOnce . "is_corporate" "Is this a corporate machine" }}
+    is_personal = {{ and .is_macos (not .is_corporate) }}
+    
+    # Email selection based on environment
+    personal_email = {{ promptStringOnce . "personal_email" "Enter your personal email" }}
+    corporate_email = {{ promptStringOnce . "corporate_email" "Enter your corporate email" }}
+    email = {{ if .is_corporate }}{{ .corporate_email }}{{ else }}{{ .personal_email }}{{ end }}
 
 [git]
     autoCommit = true

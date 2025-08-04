@@ -1,0 +1,23 @@
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+
+[core]
+    editor = vim
+{{- if .is_macos }}
+    autocrlf = input
+{{- else if .is_linux }}
+    autocrlf = input
+{{- end }}
+
+[init]
+    defaultBranch = main
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    visual = !gitk
