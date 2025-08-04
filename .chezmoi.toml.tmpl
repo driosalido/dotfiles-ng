@@ -3,8 +3,8 @@
     email = "{{ promptStringOnce . "email" "Enter your email" }}"
     
     # Platform detection
-    is_macos = {{ eq .chezmoi.os "darwin" }}
-    is_linux = {{ eq .chezmoi.os "linux" }}
+    is_macos = {{ if eq .chezmoi.os "darwin" }}true{{ else }}false{{ end }}
+    is_linux = {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
 
 [git]
     autoCommit = true
