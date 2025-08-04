@@ -11,7 +11,7 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 - [x] **XDG Compliance**: Implementación del XDG Base Directory Specification
 
 ### Shell Configuration
-- [x] **Basic Shell Config**: Configuración básica de zsh y bash
+- [x] **Basic Shell Config**: Configuración básica de zsh
 - [x] **Oh-My-Zsh Integration**: Instalación automática y configuración XDG-compliant
 - [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting
 - [x] **Cross-platform Aliases**: Aliases comunes y específicos por plataforma

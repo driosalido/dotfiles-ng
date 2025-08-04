@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Install Powerlevel10k theme for Oh My Zsh
+# Only run if oh-my-zsh is installed
+
+{{- if .has_ohmyzsh }}
+POWERLEVEL10K_DIR="${ZSH_CUSTOM:-${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh/custom}/themes/powerlevel10k"
+
+if [ ! -d "$POWERLEVEL10K_DIR" ]; then
+    echo "Installing Powerlevel10k theme..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$POWERLEVEL10K_DIR"
+else
+    echo "Powerlevel10k already installed"
+fi
+
+# Install recommended fonts (optional message)
+echo ""
+echo "For the best experience with Powerlevel10k, install a Nerd Font:"
+echo "  - MesloLGS NF: https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k"
+echo "  - Or any font from: https://www.nerdfonts.com/"
+echo ""
+{{- else }}
+echo "Oh My Zsh not installed, skipping Powerlevel10k installation"
+{{- end }}
