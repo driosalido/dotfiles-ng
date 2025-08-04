@@ -1,20 +1,36 @@
 #!/bin/bash
-# Install Oh My Zsh if not already installed
+# Install Oh My Zsh if not already installed (XDG compliant)
 
 {{- if not .has_ohmyzsh }}
-echo "Installing Oh My Zsh..."
+echo "Installing Oh My Zsh (XDG compliant)..."
 
-# Install Oh My Zsh
+# Set up XDG directories
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+
+# Create necessary directories
+mkdir -p "$XDG_DATA_HOME"
+mkdir -p "$XDG_STATE_HOME/zsh"
+
+# Install Oh My Zsh to XDG location
+export RUNZSH="no"
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Move oh-my-zsh to XDG location if it was installed in the wrong place
+if [ -d "$HOME/.oh-my-zsh" ] && [ ! -d "$ZSH" ]; then
+    echo "Moving Oh My Zsh to XDG location..."
+    mv "$HOME/.oh-my-zsh" "$ZSH"
+fi
 
 # Install useful plugins
 echo "Installing zsh-autosuggestions..."
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null || true
+git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH/custom/plugins/zsh-autosuggestions" 2>/dev/null || true
 
 echo "Installing zsh-syntax-highlighting..."  
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null || true
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH/custom/plugins/zsh-syntax-highlighting" 2>/dev/null || true
 
-echo "Oh My Zsh installation completed!"
+echo "Oh My Zsh installation completed (XDG compliant)!"
 {{- else }}
 echo "Oh My Zsh is already installed, skipping installation."
 {{- end }}
