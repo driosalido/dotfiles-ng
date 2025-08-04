@@ -1,21 +1,6 @@
 [data]
     name = "David Riosalido"
-    
-    # Platform detection
-    is_macos = {{ eq .chezmoi.os "darwin" }}
-    is_linux = {{ eq .chezmoi.os "linux" }}
-    
-    # Corporate vs Personal detection for macOS (user prompted)
-    is_corporate = {{ promptBoolOnce . "is_corporate" "Is this a corporate machine" }}
-    is_personal = {{ and (eq .chezmoi.os "darwin") (not (promptBoolOnce . "is_corporate" "Is this a corporate machine")) }}
-    
-    # Email selection based on environment
-    personal_email = {{ promptStringOnce . "personal_email" "Enter your personal email" }}
-    corporate_email = {{ promptStringOnce . "corporate_email" "Enter your corporate email" }}
-    email = {{ if (promptBoolOnce . "is_corporate" "Is this a corporate machine") }}{{ promptStringOnce . "corporate_email" "Enter your corporate email" }}{{ else }}{{ promptStringOnce . "personal_email" "Enter your personal email" }}{{ end }}
-    
-    # Tool detection
-    has_1password = {{ if lookPath "op" }}true{{ else }}false{{ end }}
+    email = {{ promptStringOnce . "email" "Enter your email" }}
 
 [git]
     autoCommit = true
