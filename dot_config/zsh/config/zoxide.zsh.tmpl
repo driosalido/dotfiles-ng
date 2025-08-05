@@ -58,14 +58,14 @@ if command -v zoxide &> /dev/null; then
     fi
 else
     # Fallback to regular cd if zoxide is not available
-    echo "Note: zoxide not found. Install with 'brew install zoxide' for smarter directory jumping."
+    # Note: Install zoxide with 'brew install zoxide' for smarter directory jumping
 fi
 
 # For users migrating from autojump
 {{- if not .has_brew }}
 if command -v autojump &> /dev/null; then
     [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
-    echo "Note: You're using autojump. Consider switching to zoxide for better performance."
+    # Note: Consider switching to zoxide for better performance
 fi
 {{- end }}
 {{- end }}
