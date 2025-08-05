@@ -71,3 +71,13 @@ cask "zoom"
 cask "microsoft-teams"
 {{- end }}
 {{- end }}
+
+{{- if .is_linux }}
+# Linux-specific tools
+brew "gcc"              # GNU Compiler Collection (often needed for building)
+brew "util-linux"       # Linux utilities
+brew "procps"           # Process utilities (ps, top, etc.)
+
+# Note: GUI applications on Linux should be installed via native package manager
+# Homebrew on Linux focuses on CLI tools and development dependencies
+{{- end }}

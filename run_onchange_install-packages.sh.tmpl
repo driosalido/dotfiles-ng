@@ -3,7 +3,7 @@
 # Install packages from Brewfile
 # This script runs when the Brewfile changes
 
-{{- if .is_macos }}
+{{- if or .is_macos .is_linux }}
 {{- if .has_brew }}
 echo "Installing packages from Brewfile..."
 
@@ -28,5 +28,5 @@ fi
 echo "Homebrew not installed. Run chezmoi apply again after Homebrew is installed."
 {{- end }}
 {{- else }}
-echo "Skipping Homebrew package installation (not on macOS)"
+echo "Skipping Homebrew package installation (not on macOS or Linux)"
 {{- end }}

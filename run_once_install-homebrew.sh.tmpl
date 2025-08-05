@@ -1,16 +1,33 @@
 #!/bin/bash
 
-# Install Homebrew on macOS if not already installed
-# Only runs on macOS systems
+# Install Homebrew on macOS and Linux if not already installed
 
-{{- if .is_macos }}
+{{- if or .is_macos .is_linux }}
 if ! command -v brew &> /dev/null; then
     echo "Homebrew not found. Installing Homebrew..."
+    
+    {{- if .is_linux }}
+    # Install dependencies for Linux
+    echo "Installing Homebrew dependencies for Linux..."
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y build-essential procps curl file git
+    elif command -v yum &> /dev/null; then
+        sudo yum groupinstall -y 'Development Tools'
+        sudo yum install -y procps-ng curl file git
+    elif command -v dnf &> /dev/null; then
+        sudo dnf groupinstall -y 'Development Tools'
+        sudo dnf install -y procps-ng curl file git
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -Sy --needed base-devel procps-ng curl file git
+    fi
+    {{- end }}
     
     # Install Homebrew using the official installation script
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     
     # Add Homebrew to PATH for the current session
+    {{- if .is_macos }}
     if [[ -f "/opt/homebrew/bin/brew" ]]; then
         # Apple Silicon Mac
         eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -18,6 +35,14 @@ if ! command -v brew &> /dev/null; then
         # Intel Mac
         eval "$(/usr/local/bin/brew shellenv)"
     fi
+    {{- else if .is_linux }}
+    # Linux installation path
+    if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [[ -f "$HOME/.linuxbrew/bin/brew" ]]; then
+        eval "$($HOME/.linuxbrew/bin/brew shellenv)"
+    fi
+    {{- end }}
     
     echo "Homebrew installed successfully!"
     
@@ -63,5 +88,5 @@ else
     exit 1
 fi
 {{- else }}
-echo "Skipping Homebrew installation (not on macOS)"
+echo "Skipping Homebrew installation (not on macOS or Linux)"
 {{- end }}

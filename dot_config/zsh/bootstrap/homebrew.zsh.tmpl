@@ -1,7 +1,8 @@
 # Homebrew Bootstrap Configuration
 
-{{- if .is_macos }}
+{{- if or .is_macos .is_linux }}
 # Ensure Homebrew is in PATH
+{{- if .is_macos }}
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
     # Apple Silicon Mac
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -9,11 +10,27 @@ elif [[ -f "/usr/local/bin/brew" ]]; then
     # Intel Mac
     eval "$(/usr/local/bin/brew shellenv)"
 fi
+{{- else if .is_linux }}
+if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+    # Standard Linux installation
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -f "$HOME/.linuxbrew/bin/brew" ]]; then
+    # User-specific Linux installation
+    eval "$($HOME/.linuxbrew/bin/brew shellenv)"
+fi
+{{- end }}
 
 # Set Homebrew environment variables
 if command -v brew &>/dev/null; then
     export HOMEBREW_NO_ANALYTICS=1
     export HOMEBREW_NO_AUTO_UPDATE=1
     export HOMEBREW_BUNDLE_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/homebrew/Brewfile"
+    
+    {{- if .is_linux }}
+    # Linux-specific Homebrew settings
+    export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+    export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+    export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
+    {{- end }}
 fi
 {{- end }}
