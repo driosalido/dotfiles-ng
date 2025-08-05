@@ -1,11 +1,12 @@
 [data]
     name = "David Riosalido"
-    email = "{{ .email }}"
+    # Auto-detect email from git config, fallback to prompt
+    email = "{{ or (env "GIT_AUTHOR_EMAIL") (output "git" "config" "--global" "user.email" | trim) "user@example.com" }}"
     
-    # Environment detection
-    is_personal = {{ .is_personal }}
-    is_corporate = {{ if .is_personal }}false{{ else }}true{{ end }}
-    use_secrets = {{ .use_secrets }}
+    # Environment detection - default to personal, can be overridden
+    is_personal = {{ env "DOTFILES_PERSONAL" | default "true" }}
+    is_corporate = {{ if eq (env "DOTFILES_PERSONAL" | default "true") "true" }}false{{ else }}true{{ end }}
+    use_secrets = {{ env "DOTFILES_USE_SECRETS" | default "true" }}
     
     # Platform detection
     is_macos = {{ if eq .chezmoi.os "darwin" }}true{{ else }}false{{ end }}

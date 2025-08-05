@@ -19,38 +19,25 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 
 ## Quick Install
 
-### Interactive Installation (Recommended)
+### One-liner Installation (Recommended)
 
 ```bash
-# Download and run the installation script (with cache bypass)
-curl -fsSL "https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh?$(date +%s)" -o install.sh
-chmod +x install.sh
-./install.sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 ```
 
-Or as a one-liner:
+This will:
+- Install chezmoi automatically  
+- Apply all dotfiles configurations
+- Install Homebrew and packages
+- Set up the complete development environment
+
+### Alternative Installation
+
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh?$(date +%s)" -o install.sh && chmod +x install.sh && ./install.sh && rm install.sh
-```
-
-### Manual Installation (Advanced)
-
-⚠️ **Note**: Due to interactive prompts, the one-liner methods below may not work reliably. Use the interactive installation above for best results.
-
-```bash
-# 1. Install chezmoi
+# Install chezmoi first
 curl -sfL https://git.io/chezmoi | sh
 
-# 2. Create config file first
-mkdir -p ~/.config/chezmoi
-cat > ~/.config/chezmoi/chezmoi.toml << EOF
-[data]
-    email = "your-email@example.com"
-    is_personal = true
-    use_secrets = false
-EOF
-
-# 3. Initialize and apply dotfiles
+# Then apply dotfiles
 chezmoi init --apply driosalido/dotfiles-ng
 ```
 
@@ -70,10 +57,25 @@ First run will:
 
 ## Customization
 
-The installation will prompt for:
-- Your email address
-- Whether this is a personal or corporate machine
-- Whether to use secrets management (1Password, etc.)
+The installation uses smart defaults:
+- **Email**: Auto-detected from your git config
+- **Environment**: Defaults to personal computer
+- **Secrets**: Enabled by default (1Password, etc.)
+
+To customize, set environment variables before installation:
+```bash
+# For corporate environment
+export DOTFILES_PERSONAL=false
+
+# Disable secrets management  
+export DOTFILES_USE_SECRETS=false
+
+# Override email
+export GIT_AUTHOR_EMAIL="work@company.com"
+
+# Then install
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
+```
 
 ## Usage
 
@@ -93,25 +95,17 @@ chezmoi apply
 
 ## Troubleshooting
 
-### Chezmoi exits when typing any key at prompts
+### Installation Issues
 
-This happens when chezmoi can't properly handle interactive input. **Solution** (tested and working):
+If you encounter any issues during installation:
 
+1. **Clean install**:
 ```bash
-# Create config file first (recommended solution)
-mkdir -p ~/.config/chezmoi
-cat > ~/.config/chezmoi/chezmoi.toml << EOF
-[data]
-    email = "your-email@example.com"
-    is_personal = true
-    use_secrets = false
-EOF
-
-# Then run init
-chezmoi init --apply driosalido/dotfiles-ng
+rm -rf ~/.local/share/chezmoi ~/.config/chezmoi
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 ```
 
-⚠️ **Note**: Command-line flags like `--promptString` don't work reliably. Always create the config file first.
+2. **Check prerequisites**: Ensure Command Line Tools are installed on macOS
 
 ### Font icons not showing correctly
 
