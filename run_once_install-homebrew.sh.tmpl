@@ -48,26 +48,7 @@ if ! command -v brew &> /dev/null; then
     echo "Updating Homebrew..."
     brew update
     
-    # Install essential packages
-    echo "Installing essential Homebrew packages..."
-    brew install \
-        coreutils \
-        findutils \
-        gnu-sed \
-        gawk \
-        grep \
-        curl \
-        wget \
-        git \
-        jq \
-        ripgrep \
-        fd \
-        bat \
-        eza \
-        delta \
-        gh
-        
-    echo "Essential packages installed!"
+    echo "✓ Homebrew is ready! Packages will be installed from Brewfile."
 else
     echo "Homebrew is already installed at $(which brew)"
     
