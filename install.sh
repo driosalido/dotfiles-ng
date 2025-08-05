@@ -48,15 +48,17 @@ print_info "Please answer the following questions:"
 echo
 
 # Email
-read -p "Enter your email address: " email
-while [[ ! "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; do
-    print_error "Invalid email format"
-    read -p "Enter your email address: " email
+read -p "Enter your email address: " email </dev/tty
+while [[ -z "$email" ]] || [[ ! "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; do
+    if [[ -n "$email" ]]; then
+        print_error "Invalid email format"
+    fi
+    read -p "Enter your email address: " email </dev/tty
 done
 
 # Personal or corporate
 echo
-read -p "Is this a personal computer? (y/N): " is_personal
+read -p "Is this a personal computer? (y/N): " is_personal </dev/tty
 if [[ "$is_personal" =~ ^[Yy]$ ]]; then
     is_personal="true"
 else
@@ -65,7 +67,7 @@ fi
 
 # Use secrets
 echo
-read -p "Do you want to use secrets management (1Password, etc.)? (y/N): " use_secrets
+read -p "Do you want to use secrets management (1Password, etc.)? (y/N): " use_secrets </dev/tty
 if [[ "$use_secrets" =~ ^[Yy]$ ]]; then
     use_secrets="true"
 else
