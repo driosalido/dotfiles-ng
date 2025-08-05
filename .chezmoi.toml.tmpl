@@ -1,11 +1,11 @@
 [data]
     name = "David Riosalido"
-    email = "{{ promptStringOnce . "email" "Enter your email" }}"
+    email = "{{ .email }}"
     
     # Environment detection
-    is_personal = {{ promptBoolOnce . "is_personal" "Is this a personal computer" }}
+    is_personal = {{ .is_personal }}
     is_corporate = {{ if .is_personal }}false{{ else }}true{{ end }}
-    use_secrets = {{ promptBoolOnce . "use_secrets" "Do you want to use secrets (1Password, etc.)" }}
+    use_secrets = {{ .use_secrets }}
     
     # Platform detection
     is_macos = {{ if eq .chezmoi.os "darwin" }}true{{ else }}false{{ end }}
