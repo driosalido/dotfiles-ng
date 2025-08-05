@@ -77,12 +77,17 @@ fi
 # Initialize and apply dotfiles
 echo
 print_info "Initializing dotfiles..."
-# Use --apply to ensure config is loaded properly
-chezmoi init --apply \
-  --promptString email="$email" \
-  --promptBool is_personal=$is_personal \
-  --promptBool use_secrets=$use_secrets \
-  driosalido/dotfiles-ng
+
+# Create config file with the data first
+mkdir -p ~/.config/chezmoi
+cat > ~/.config/chezmoi/chezmoi.toml << EOF
+[data]
+    email = "$email"
+    is_personal = $is_personal
+    use_secrets = $use_secrets
+EOF
+
+chezmoi init --apply driosalido/dotfiles-ng
 
 echo
 print_success "Dotfiles installation complete!"

@@ -12,7 +12,7 @@ if [[ -f "$BREWFILE" ]]; then
     echo "Found Brewfile at: $BREWFILE"
     
     # Install packages from Brewfile
-    brew bundle --file="$BREWFILE" --no-lock
+    brew bundle --file="$BREWFILE"
     
     # Cleanup old versions
     echo "Cleaning up old Homebrew packages..."
