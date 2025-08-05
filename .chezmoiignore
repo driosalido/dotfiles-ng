@@ -1,0 +1,9 @@
+# Files to ignore when applying dotfiles
+# These files are for repository documentation/development only
+
+README.md
+ROADMAP.md
+install.sh
+install-debug.sh
+uninstall.sh
+CLAUDE.md
