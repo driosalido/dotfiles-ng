@@ -74,26 +74,15 @@ else
     use_secrets="false"
 fi
 
-# Create chezmoi config
-print_info "Creating chezmoi configuration..."
-mkdir -p ~/.config/chezmoi
-
-cat > ~/.config/chezmoi/chezmoi.toml << EOF
-[data]
-    email = "$email"
-    is_personal = $is_personal
-    use_secrets = $use_secrets
-EOF
-
-print_success "Configuration created!"
-
 # Initialize and apply dotfiles
 echo
 print_info "Initializing dotfiles..."
-chezmoi init driosalido/dotfiles-ng
-
-print_info "Applying dotfiles..."
-chezmoi apply
+# Use --apply to ensure config is loaded properly
+chezmoi init --apply \
+  --promptString email="$email" \
+  --promptBool is_personal=$is_personal \
+  --promptBool use_secrets=$use_secrets \
+  driosalido/dotfiles-ng
 
 echo
 print_success "Dotfiles installation complete!"
