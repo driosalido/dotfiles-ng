@@ -64,11 +64,22 @@ echo
 print_info "Initializing dotfiles with debug info..."
 print_debug "Running: chezmoi init --apply --promptString email=\"$email\" --promptBool is_personal=$is_personal --promptBool use_secrets=$use_secrets driosalido/dotfiles-ng"
 
-chezmoi init --apply \
-  --promptString email="$email" \
-  --promptBool is_personal=$is_personal \
-  --promptBool use_secrets=$use_secrets \
-  driosalido/dotfiles-ng
+# Try different syntax for passing variables
+print_debug "Creating temporary config to pass variables..."
+
+# Create a temporary config file with the data
+mkdir -p ~/.config/chezmoi
+cat > ~/.config/chezmoi/chezmoi.toml << EOF
+[data]
+    email = "$email"
+    is_personal = $is_personal
+    use_secrets = $use_secrets
+EOF
+
+print_debug "Config file created:"
+cat ~/.config/chezmoi/chezmoi.toml
+
+chezmoi init --apply driosalido/dotfiles-ng
 
 echo
 print_success "Dotfiles installation complete!"
