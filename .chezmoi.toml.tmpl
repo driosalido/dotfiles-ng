@@ -2,14 +2,50 @@
     name = "David Riosalido"
     email = "{{ promptStringOnce . "email" "Enter your email" }}"
     
+    # Environment detection
+    is_personal = {{ promptBoolOnce . "is_personal" "Is this a personal computer" }}
+    is_corporate = {{ if .is_personal }}false{{ else }}true{{ end }}
+    use_secrets = {{ promptBoolOnce . "use_secrets" "Do you want to use secrets (1Password, etc.)" }}
+    
     # Platform detection
     is_macos = {{ if eq .chezmoi.os "darwin" }}true{{ else }}false{{ end }}
     is_linux = {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
     
     # Tool detection
     has_1password = {{ if lookPath "op" }}true{{ else }}false{{ end }}
+    has_brew = {{ if lookPath "brew" }}true{{ else }}false{{ end }}
+    has_delta = {{ if lookPath "delta" }}true{{ else }}false{{ end }}
+    has_code = {{ if lookPath "code" }}true{{ else }}false{{ end }}
     has_ohmyzsh = {{ if stat (joinPath .chezmoi.homeDir ".local/share/oh-my-zsh") }}true{{ else }}false{{ end }}
+    
+    # XDG directories
+    xdg_bin_home = "{{ .chezmoi.homeDir }}/.local/bin"
+    xdg_cache_home = "{{ .chezmoi.homeDir }}/.cache"
+    xdg_config_home = "{{ .chezmoi.homeDir }}/.config"
+    xdg_data_home = "{{ .chezmoi.homeDir }}/.local/share"
+    xdg_state_home = "{{ .chezmoi.homeDir }}/.local/state"
 
 [git]
     autoCommit = true
     autoPush = false
+
+[diff]
+    {{- if .has_delta }}
+    command = "delta"
+    {{- else }}
+    command = "diff"
+    {{- end }}
+
+[edit]
+    {{- if .has_code }}
+    command = "code"
+    args = ["--wait"]
+    {{- else }}
+    command = "nano"
+    {{- end }}
+
+[merge]
+    {{- if .has_code }}
+    command = "code"
+    args = ["--wait", "--merge"]
+    {{- end }}
