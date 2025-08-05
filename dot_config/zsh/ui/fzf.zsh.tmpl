@@ -1,4 +1,4 @@
-# FZF Configuration
+# FZF Configuration - Loaded after frameworks to ensure key bindings work
 
 {{- if .has_brew }}
 # Source fzf key bindings and completion
@@ -13,8 +13,19 @@ if command -v fzf &> /dev/null; then
     fi
     
     # Source key bindings and completion if available
+    # Load these AFTER oh-my-zsh to ensure they're not overridden
     [[ -f "$FZF_BASE/shell/key-bindings.zsh" ]] && source "$FZF_BASE/shell/key-bindings.zsh"
     [[ -f "$FZF_BASE/shell/completion.zsh" ]] && source "$FZF_BASE/shell/completion.zsh"
+    
+    # Ensure key bindings are properly set (redundant but safe)
+    if [[ -n "$FZF_BASE" ]]; then
+        # Ctrl+R: history search
+        bindkey '^R' fzf-history-widget
+        # Ctrl+T: file search
+        bindkey '^T' fzf-file-widget
+        # Alt+C: directory search
+        bindkey '\ec' fzf-cd-widget
+    fi
 fi
 
 # FZF Settings
