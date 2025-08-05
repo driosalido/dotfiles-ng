@@ -19,6 +19,20 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 
 ## Quick Install
 
+### Interactive Installation (Recommended)
+
+```bash
+# Download and run the installation script
+curl -fsSL https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh | bash
+```
+
+Or if you prefer to review the script first:
+```bash
+curl -fsSL https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
+```
+
 ### One-liner Installation
 
 ```bash
@@ -95,3 +109,48 @@ chezmoi diff
 # Apply changes
 chezmoi apply
 ```
+
+## Troubleshooting
+
+### Chezmoi exits when typing any key at prompts
+
+This happens when chezmoi can't properly handle interactive input. Solutions:
+
+1. **Use init with prompts** (recommended):
+```bash
+# Answer prompts during init
+chezmoi init driosalido/dotfiles-ng
+# Then apply separately
+chezmoi apply
+```
+
+2. **Pre-set answers in config**:
+```bash
+# Create config file first
+mkdir -p ~/.config/chezmoi
+cat > ~/.config/chezmoi/chezmoi.toml << EOF
+[data]
+    email = "your-email@example.com"
+    is_personal = true
+    use_secrets = false
+EOF
+
+# Then run init
+chezmoi init --apply driosalido/dotfiles-ng
+```
+
+3. **Use --promptString flags**:
+```bash
+chezmoi init --apply \
+  --promptString email="your-email@example.com" \
+  --promptBool is_personal=true \
+  --promptBool use_secrets=false \
+  driosalido/dotfiles-ng
+```
+
+### Font icons not showing correctly
+
+Make sure to:
+1. Set your terminal font to "MesloLGS NF"
+2. Restart your terminal after font installation
+3. Run `p10k configure` if icons still don't appear
