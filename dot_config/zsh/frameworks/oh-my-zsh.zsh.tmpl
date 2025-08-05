@@ -24,6 +24,20 @@ plugins=(
 
 # Load Oh My Zsh
 source "$ZSH/oh-my-zsh.sh"
+
+# Configure autosuggestions colors for better visibility
+# Default color is often too light, especially on light backgrounds
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'  # Medium gray (244 is more visible than default)
+
+# Alternative colors you can try:
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=240'      # Darker gray
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'     # Blue suggestions
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=cyan'     # Cyan suggestions
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=magenta'  # Magenta suggestions
+
+# Configure autosuggestions behavior
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)  # Use both history and completion
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20              # Don't suggest for very long commands
 {{- else }}
 # Oh My Zsh not installed - using fallback prompt
 PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
