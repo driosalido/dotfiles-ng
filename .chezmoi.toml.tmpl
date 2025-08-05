@@ -30,22 +30,24 @@
     autoPush = false
 
 [diff]
-    {{- if .has_delta }}
+    {{- if lookPath "delta" }}
     command = "delta"
     {{- else }}
     command = "diff"
     {{- end }}
 
 [edit]
-    {{- if .has_code }}
+    {{- if lookPath "code" }}
     command = "code"
     args = ["--wait"]
+    {{- else if lookPath "nvim" }}
+    command = "nvim"
     {{- else }}
     command = "nano"
     {{- end }}
 
 [merge]
-    {{- if .has_code }}
+    {{- if lookPath "code" }}
     command = "code"
     args = ["--wait", "--merge"]
     {{- end }}

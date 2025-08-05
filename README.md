@@ -22,15 +22,15 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 ### Interactive Installation (Recommended)
 
 ```bash
-# Download and run the installation script
-curl -fsSL https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh -o install.sh
+# Download and run the installation script (with cache bypass)
+curl -fsSL "https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh?$(date +%s)" -o install.sh
 chmod +x install.sh
 ./install.sh
 ```
 
 Or as a one-liner:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh && rm install.sh
+curl -fsSL "https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh?$(date +%s)" -o install.sh && chmod +x install.sh && ./install.sh && rm install.sh
 ```
 
 ### One-liner Installation
