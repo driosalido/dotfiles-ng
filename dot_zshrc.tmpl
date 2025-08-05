@@ -1,5 +1,9 @@
 # Zsh configuration for {{ .name }}
 # This file sources the modular configuration from ~/.config/zsh/
 
+# Define XDG directories first (needed for the source path)
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
 # Source the modular zsh configuration
-source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshrc"
+source "$XDG_CONFIG_HOME/zsh/zshrc"
