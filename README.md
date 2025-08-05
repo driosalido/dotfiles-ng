@@ -33,43 +33,24 @@ Or as a one-liner:
 curl -fsSL "https://raw.githubusercontent.com/driosalido/dotfiles-ng/main/install.sh?$(date +%s)" -o install.sh && chmod +x install.sh && ./install.sh && rm install.sh
 ```
 
-### One-liner Installation
+### Manual Installation (Advanced)
+
+⚠️ **Note**: Due to interactive prompts, the one-liner methods below may not work reliably. Use the interactive installation above for best results.
 
 ```bash
-# Install chezmoi and apply dotfiles in one command
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
-```
-
-### Step-by-step Installation
-
-```bash
-# 1. Install chezmoi binary
+# 1. Install chezmoi
 curl -sfL https://git.io/chezmoi | sh
 
-# 2. Move chezmoi to PATH (if not automatically done)
-sudo mv ./bin/chezmoi /usr/local/bin/
+# 2. Create config file first
+mkdir -p ~/.config/chezmoi
+cat > ~/.config/chezmoi/chezmoi.toml << EOF
+[data]
+    email = "your-email@example.com"
+    is_personal = true
+    use_secrets = false
+EOF
 
 # 3. Initialize and apply dotfiles
-chezmoi init --apply https://github.com/driosalido/dotfiles-ng.git
-```
-
-### Alternative Installation Methods
-
-**macOS with Homebrew** (if already installed):
-```bash
-brew install chezmoi
-chezmoi init --apply driosalido/dotfiles-ng
-```
-
-**Linux with package manager**:
-```bash
-# Ubuntu/Debian
-sudo apt install chezmoi
-
-# Arch Linux
-sudo pacman -S chezmoi
-
-# Then apply dotfiles
 chezmoi init --apply driosalido/dotfiles-ng
 ```
 
@@ -114,19 +95,10 @@ chezmoi apply
 
 ### Chezmoi exits when typing any key at prompts
 
-This happens when chezmoi can't properly handle interactive input. Solutions:
+This happens when chezmoi can't properly handle interactive input. **Solution** (tested and working):
 
-1. **Use init with prompts** (recommended):
 ```bash
-# Answer prompts during init
-chezmoi init driosalido/dotfiles-ng
-# Then apply separately
-chezmoi apply
-```
-
-2. **Pre-set answers in config**:
-```bash
-# Create config file first
+# Create config file first (recommended solution)
 mkdir -p ~/.config/chezmoi
 cat > ~/.config/chezmoi/chezmoi.toml << EOF
 [data]
@@ -139,14 +111,7 @@ EOF
 chezmoi init --apply driosalido/dotfiles-ng
 ```
 
-3. **Use --promptString flags**:
-```bash
-chezmoi init --apply \
-  --promptString email="your-email@example.com" \
-  --promptBool is_personal=true \
-  --promptBool use_secrets=false \
-  driosalido/dotfiles-ng
-```
+⚠️ **Note**: Command-line flags like `--promptString` don't work reliably. Always create the config file first.
 
 ### Font icons not showing correctly
 
