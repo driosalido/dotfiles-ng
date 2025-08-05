@@ -1,6 +1,5 @@
 # Homebrew Bootstrap Configuration
 
-{{- if or .is_macos .is_linux }}
 # Ensure Homebrew is in PATH
 {{- if .is_macos }}
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
@@ -33,4 +32,3 @@ if command -v brew &>/dev/null; then
     export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
     {{- end }}
 fi
-{{- end }}
