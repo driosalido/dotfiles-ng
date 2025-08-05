@@ -9,6 +9,8 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 - [x] **Platform Detection**: Detección automática de macOS/Linux
 - [x] **Git Configuration**: Template multiplataforma con variables personalizadas
 - [x] **XDG Compliance**: Implementación del XDG Base Directory Specification
+- [x] **One-liner Installation**: Instalación completa con `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng`
+- [x] **Smart Defaults**: Auto-detección de email, configuración sin prompts
 
 ### Shell Configuration
 - [x] **Basic Shell Config**: Configuración básica de zsh (bash eliminado)
@@ -19,6 +21,15 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 - [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting
 - [x] **Cross-platform Aliases**: Aliases comunes y específicos por plataforma
 - [x] **XDG-Compliant P10k Config**: Configuración en `~/.config/powerlevel10k/p10k.zsh`
+- [x] **Advanced Autocompletion**: Sistema de completado con menús y colores
+- [x] **FZF Integration**: Búsqueda fuzzy con Ctrl+R, Ctrl+T, Alt+C
+- [x] **Modern Tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta
+
+### Package Management
+- [x] **Homebrew Integration**: Instalación automática y gestión de paquetes
+- [x] **Cross-platform Brewfile**: Soporte para macOS y Linux
+- [x] **Package Cleanup**: Eliminación de paquetes deprecados y erróneos
+- [x] **Cask Applications**: Instalación de aplicaciones GUI (personal/corporativo)
 
 ## 🚧 Próximas Funcionalidades (Prioridad Alta)
 
@@ -35,12 +46,7 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   - Scripts para gestión de secrets
   - Integración con SSH keys
 
-### 3. Package Management
-- [ ] **Homebrew Integration (macOS)**
-  - Detección e instalación automática
-  - Lista de paquetes esenciales (Brewfile)
-  - Gestión de cask applications
-  
+### 3. Advanced Package Management
 - [ ] **APT Integration (Linux)**
   - Lista de paquetes esenciales
   - Actualización automática de repositorios
@@ -87,10 +93,10 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   - iTerm2 preferences (macOS)
   - Windows Terminal settings (if needed)
 
-- [ ] **Modern CLI Tools**
-  - bat, exa, fd, ripgrep configurations
-  - fzf integration and key bindings
-  - delta (git diff) configuration
+- [ ] **Additional CLI Tools**
+  - lazygit, bottom, broot, dust, glow
+  - Advanced tool configurations
+  - Custom functions and aliases
 
 ### System Preferences
 - [ ] **macOS Defaults**
@@ -147,17 +153,23 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 
 ## 🎯 Hitos Principales
 
-### Milestone 1: Environment Management (Actual)
+### Milestone 1: Core Shell Experience (COMPLETADO ✅)
+- ✅ One-liner installation
+- ✅ Advanced shell configuration
+- ✅ Modern tools integration
+- ✅ Package management
+
+### Milestone 2: Environment Management (ACTUAL)
 - Corporate/Personal detection
 - 1Password integration
-- Basic package management
+- SSH configuration
 
-### Milestone 2: Development Ready
+### Milestone 3: Development Ready
 - Python + Node.js environments
-- SSH configuration completa
-- Editor básico configurado
+- Editor configurations
+- Advanced development tools
 
-### Milestone 3: Production Ready
+### Milestone 4: Production Ready
 - Todas las funcionalidades core implementadas
 - Documentación completa
 - Scripts de mantenimiento
