@@ -1,0 +1,71 @@
+# Zoxide Configuration - Smarter cd command
+
+{{- if .has_brew }}
+# Initialize zoxide if available
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+    
+    # Aliases for muscle memory from autojump/z
+    alias j="z"      # For autojump users
+    alias ji="zi"    # Interactive selection with fzf
+    
+    # Additional zoxide settings
+    export _ZO_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zoxide"
+    export _ZO_MAXAGE=10000     # Maximum number of entries (default: 10000)
+    export _ZO_RESOLVE_SYMLINKS=1  # Resolve symlinks before adding to database
+    
+    # Custom functions leveraging zoxide
+    # Jump to directory and list contents
+    zl() {
+        z "$@" && eza -la --icons --group-directories-first || ls -la
+    }
+    
+    # Jump to directory and open in editor
+    ze() {
+        z "$@" && ${EDITOR:-vim} .
+    }
+    
+    # Remove directory from zoxide database
+    zrm() {
+        zoxide remove "$@"
+    }
+    
+    # Show zoxide statistics
+    zstats() {
+        echo "Zoxide Database Statistics:"
+        echo "Database location: $_ZO_DATA_DIR"
+        if [[ -f "$_ZO_DATA_DIR/db.zo" ]]; then
+            echo "Database size: $(du -h "$_ZO_DATA_DIR/db.zo" | cut -f1)"
+            echo "Number of entries: $(zoxide query -l | wc -l)"
+            echo ""
+            echo "Top 10 directories:"
+            zoxide query -l -s | head -10
+        else
+            echo "No database found"
+        fi
+    }
+    
+    # Integration with fzf for better interactive selection
+    if command -v fzf &> /dev/null; then
+        # Override zi to use custom fzf options
+        zi() {
+            local result
+            result="$(zoxide query -i -- "$@")"
+            if [[ -n "$result" ]]; then
+                cd "$result" || return 1
+            fi
+        }
+    fi
+else
+    # Fallback to regular cd if zoxide is not available
+    echo "Note: zoxide not found. Install with 'brew install zoxide' for smarter directory jumping."
+fi
+
+# For users migrating from autojump
+{{- if not .has_brew }}
+if command -v autojump &> /dev/null; then
+    [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
+    echo "Note: You're using autojump. Consider switching to zoxide for better performance."
+fi
+{{- end }}
+{{- end }}

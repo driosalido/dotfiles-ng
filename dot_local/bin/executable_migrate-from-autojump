@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Migrate from autojump to zoxide
+
+set -euo pipefail
+
+echo "Autojump to Zoxide Migration Tool"
+echo "================================="
+echo
+
+# Check if zoxide is installed
+if ! command -v zoxide &> /dev/null; then
+    echo "Error: zoxide is not installed."
+    echo "Install it with: brew install zoxide"
+    exit 1
+fi
+
+# Check if autojump database exists
+AUTOJUMP_DB=""
+if [[ -f "$HOME/.local/share/autojump/autojump.txt" ]]; then
+    AUTOJUMP_DB="$HOME/.local/share/autojump/autojump.txt"
+elif [[ -f "$HOME/Library/autojump/autojump.txt" ]]; then
+    AUTOJUMP_DB="$HOME/Library/autojump/autojump.txt"
+elif [[ -f "$HOME/.autojump/autojump.txt" ]]; then
+    AUTOJUMP_DB="$HOME/.autojump/autojump.txt"
+fi
+
+if [[ -z "$AUTOJUMP_DB" ]]; then
+    echo "No autojump database found."
+    echo "Nothing to migrate."
+    exit 0
+fi
+
+echo "Found autojump database at: $AUTOJUMP_DB"
+echo
+
+# Count entries
+ENTRY_COUNT=$(wc -l < "$AUTOJUMP_DB")
+echo "Database contains $ENTRY_COUNT entries"
+echo
+
+# Ask for confirmation
+read -p "Do you want to import your autojump history into zoxide? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Migration cancelled."
+    exit 0
+fi
+
+# Import data
+echo "Importing autojump data into zoxide..."
+while IFS=$'\t' read -r weight path; do
+    if [[ -d "$path" ]]; then
+        # Add to zoxide with weight (zoxide import format)
+        for ((i=0; i<${weight%.*}; i++)); do
+            zoxide add "$path" 2>/dev/null || true
+        done
+    fi
+done < "$AUTOJUMP_DB"
+
+echo "Migration complete!"
+echo
+echo "You can now use:"
+echo "  z <directory>  - Jump to directory"
+echo "  zi <query>     - Interactive selection with fzf"
+echo
+echo "Your old autojump data is still at: $AUTOJUMP_DB"
+echo "You can safely uninstall autojump if you wish."
