@@ -2,20 +2,46 @@
 
 if command -v gcloud >/dev/null 2>&1; then
     
-    # Enable gcloud completion for zsh
-    # Cache the completion to improve shell startup time
-    gcloud_completion_file="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/gcloud_completion"
-    
-    # Create cache directory if it doesn't exist
-    mkdir -p "$(dirname "$gcloud_completion_file")"
-    
-    # Generate completion if cache doesn't exist or gcloud is newer
-    if [[ ! -f "$gcloud_completion_file" ]] || [[ "$(command -v gcloud)" -nt "$gcloud_completion_file" ]]; then
-        gcloud completion zsh > "$gcloud_completion_file"
+    # Detect Homebrew prefix for completion path
+    if command -v brew >/dev/null 2>&1; then
+        HOMEBREW_PREFIX="$(brew --prefix)"
     fi
     
-    # Source the cached completion
-    source "$gcloud_completion_file"
+    # Enable gcloud completion for zsh
+    # Try different methods to enable completion based on gcloud version
+    
+    # Method 1: Try the new completion command (gcloud >= 380.0.0)
+    if gcloud completion zsh >/dev/null 2>&1; then
+        gcloud_completion_file="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/gcloud_completion"
+        mkdir -p "$(dirname "$gcloud_completion_file")"
+        
+        # Generate completion if cache doesn't exist or gcloud is newer
+        if [[ ! -f "$gcloud_completion_file" ]] || [[ "$(command -v gcloud)" -nt "$gcloud_completion_file" ]]; then
+            gcloud completion zsh > "$gcloud_completion_file" 2>/dev/null
+        fi
+        
+        # Source the cached completion if it exists and is not empty
+        if [[ -s "$gcloud_completion_file" ]]; then
+            source "$gcloud_completion_file"
+        fi
+    
+    # Method 2: Try legacy completion script locations
+    elif [[ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]]; then
+        source "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
+    elif [[ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]]; then
+        source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
+    elif [[ -f "/usr/local/share/google-cloud-sdk/completion.zsh.inc" ]]; then
+        source "/usr/local/share/google-cloud-sdk/completion.zsh.inc"
+    elif [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
+        source "$HOME/google-cloud-sdk/completion.zsh.inc"
+    else
+        # Method 3: Try to find completion script automatically
+        local gcloud_completion_script
+        gcloud_completion_script=$(find /opt /usr -name "completion.zsh.inc" -path "*/google-cloud-sdk/*" 2>/dev/null | head -1)
+        if [[ -n "$gcloud_completion_script" && -f "$gcloud_completion_script" ]]; then
+            source "$gcloud_completion_script"
+        fi
+    fi
     
     # Common gcloud aliases
     alias gc='gcloud'
