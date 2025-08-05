@@ -2,9 +2,8 @@
 # This file is used by `brew bundle` to install packages
 # https://github.com/Homebrew/homebrew-bundle
 
-# Taps
-tap "homebrew/bundle"
-tap "homebrew/services"
+# Note: homebrew/bundle and homebrew/services taps were deprecated
+# Core functionality is now built into brew itself
 
 # Core tools
 brew "coreutils"        # GNU core utilities (those that come with macOS are outdated)
@@ -34,16 +33,16 @@ brew "ncdu"             # NCurses disk usage
 brew "neovim"           # Modern vim
 brew "tmux"             # Terminal multiplexer
 brew "fzf"              # Fuzzy finder - still the best!
-brew "skim"             # Fuzzy finder in Rust (fzf alternative)
 brew "peco"             # Simplistic interactive filtering tool
 brew "direnv"           # Directory-specific environment variables
 brew "shellcheck"       # Shell script linter
 brew "zoxide"           # Smarter cd command (autojump replacement)
-# brew "autojump"       # Directory jumping (older alternative to zoxide)
+# Note: skim was removed as it's not available in homebrew
+# Note: autojump commented out - zoxide is the modern replacement
 
 {{- if .is_personal }}
 # Personal tools
-brew "youtube-dl"       # Download videos
+brew "yt-dlp"           # Download videos (maintained youtube-dl fork)
 brew "ffmpeg"           # Media converter
 brew "imagemagick"      # Image manipulation
 {{- end }}
