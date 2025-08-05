@@ -155,7 +155,7 @@ if command -v gcloud >/dev/null 2>&1; then
         fi
     }
     
-    # AI-powered command helper (if Duet AI is available)
+    # AI-powered command helper with smart fallbacks
     gai-help() {
         if [[ $# -eq 0 ]]; then
             echo "Usage: gai-help <question about GCP>"
@@ -165,6 +165,8 @@ if command -v gcloud >/dev/null 2>&1; then
         fi
         
         local question="$*"
+        echo "🤖 Analyzing question: '$question'"
+        echo ""
         
         # Try different AI endpoints that might be available
         if gcloud alpha duet code-chat --message="$question" 2>/dev/null; then
@@ -172,14 +174,83 @@ if command -v gcloud >/dev/null 2>&1; then
         elif gcloud alpha ai endpoints predict --endpoint="" --region="" --json-request="{\"prompt\": \"$question\"}" 2>/dev/null; then
             return 0
         else
-            echo "🤖 AI assistance not available. Here are some alternatives:"
+            # Smart fallback with contextual help
+            echo "🔍 AI not available, but here's contextual help:"
             echo ""
-            echo "1. 📚 Official docs: https://cloud.google.com/docs"
-            echo "2. 🔍 Search examples: gcloud help"
-            echo "3. 💬 Community: https://stackoverflow.com/questions/tagged/google-cloud-platform"
+            
+            # Extract key terms and provide targeted help
+            local key_terms=($(echo "$question" | tr '[:upper:]' '[:lower:]' | grep -oE '\b(create|deploy|setup|configure|gke|cluster|cloud run|sql|storage|compute|instance|load balancer|vpc|firewall|iam|service account|kubernetes|docker|container)\b' | head -3))
+            
+            if [[ ${#key_terms[@]} -gt 0 ]]; then
+                echo "📋 Based on keywords: ${key_terms[*]}"
+                echo ""
+                
+                # Provide specific help based on detected terms
+                for term in "${key_terms[@]}"; do
+                    case "$term" in
+                        "gke"|"cluster"|"kubernetes")
+                            echo "🚀 GKE Cluster Commands:"
+                            echo "  gcloud container clusters create my-cluster --zone=us-central1-a"
+                            echo "  gcloud container clusters get-credentials my-cluster --zone=us-central1-a"
+                            echo "  kubectl get nodes"
+                            echo ""
+                            ;;
+                        "cloud run"|"deploy")
+                            echo "☁️ Cloud Run Commands:"
+                            echo "  gcloud run deploy --image gcr.io/PROJECT/IMAGE --platform managed"
+                            echo "  gcloud run services list"
+                            echo "  gcloud run services describe SERVICE --region=us-central1"
+                            echo ""
+                            ;;
+                        "sql")
+                            echo "🗄️ Cloud SQL Commands:"  
+                            echo "  gcloud sql instances create myinstance --database-version=MYSQL_8_0"
+                            echo "  gcloud sql databases create mydatabase --instance=myinstance"
+                            echo "  gcloud sql users create myuser --instance=myinstance --password=mypassword"
+                            echo ""
+                            ;;
+                        "compute"|"instance")
+                            echo "💻 Compute Engine Commands:"
+                            echo "  gcloud compute instances create my-vm --zone=us-central1-a"
+                            echo "  gcloud compute instances list"
+                            echo "  gcloud compute ssh my-vm --zone=us-central1-a"
+                            echo ""
+                            ;;
+                        "storage")
+                            echo "📦 Cloud Storage Commands:"
+                            echo "  gsutil mb gs://my-bucket"
+                            echo "  gsutil cp file.txt gs://my-bucket/"
+                            echo "  gsutil ls gs://my-bucket/"
+                            echo ""
+                            ;;
+                        "iam"|"service account")
+                            echo "🔐 IAM Commands:"
+                            echo "  gcloud iam service-accounts create my-sa"
+                            echo "  gcloud projects add-iam-policy-binding PROJECT --member='serviceAccount:my-sa@PROJECT.iam.gserviceaccount.com' --role='roles/editor'"
+                            echo ""
+                            ;;
+                    esac
+                done
+            fi
+            
+            echo "📚 Additional Resources:"
+            echo "  • Official docs: https://cloud.google.com/docs"
+            echo "  • Interactive tutorial: gcloud interactive"  
+            echo "  • Command help: gcloud COMMAND --help"
+            echo "  • Examples: gcloud topic command-conventions"
             echo ""
-            echo "For your question: '$question'"
-            echo "Try: gcloud help | grep -i '$(echo "$question" | awk '{print $1}')'"
+            
+            # Suggest specific gcloud help commands
+            local first_word=$(echo "$question" | awk '{print tolower($1)}')
+            case "$first_word" in
+                "how"|"what"|"why")
+                    local second_word=$(echo "$question" | awk '{print tolower($2)}')
+                    echo "💡 Try: gcloud help | grep -i '$second_word'"
+                    ;;
+                *)
+                    echo "💡 Try: gcloud help | grep -i '$first_word'"
+                    ;;
+            esac
         fi
     }
     
