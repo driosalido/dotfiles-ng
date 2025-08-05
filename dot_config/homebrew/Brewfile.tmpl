@@ -47,9 +47,9 @@ brew "ffmpeg"           # Media converter
 brew "imagemagick"      # Image manipulation
 {{- end }}
 
-{{- if .has_1password }}
+{{- if .use_secrets }}
 # Security tools
-cask "1password-cli"    # 1Password CLI
+brew "1password-cli"    # 1Password CLI (op command)
 {{- end }}
 
 # Platform-specific tools
