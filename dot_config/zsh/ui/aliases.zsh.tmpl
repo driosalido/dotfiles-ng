@@ -59,3 +59,17 @@ alias mv='mv -i'
 command -v bat >/dev/null && alias cat='bat'
 command -v exa >/dev/null && alias ls='exa' && alias ll='exa -l' && alias la='exa -la'
 command -v fd >/dev/null && alias find='fd'
+
+# Editor shortcuts
+if command -v nvim >/dev/null; then
+    alias v='nvim'
+    alias vi='nvim'
+    alias vim='nvim'
+    alias nv='nvim'
+    alias nvd='nvim -d'  # Diff mode
+    alias vimrc='nvim ~/.config/nvim/init.lua'
+    alias nvimrc='nvim ~/.config/nvim/init.lua'
+else
+    alias v='vim'
+    alias vi='vim'
+fi
