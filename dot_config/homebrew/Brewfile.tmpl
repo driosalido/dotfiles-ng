@@ -1,0 +1,73 @@
+# Homebrew Bundle file
+# This file is used by `brew bundle` to install packages
+# https://github.com/Homebrew/homebrew-bundle
+
+# Taps
+tap "homebrew/bundle"
+tap "homebrew/services"
+
+# Core tools
+brew "coreutils"        # GNU core utilities (those that come with macOS are outdated)
+brew "findutils"        # GNU find, locate, updatedb, and xargs
+brew "gnu-sed"          # GNU sed
+brew "gawk"             # GNU awk
+brew "grep"             # GNU grep
+
+# Essential CLI tools
+brew "curl"             # Transfer data from or to a server
+brew "wget"             # Internet file retriever
+brew "git"              # Version control
+brew "gh"               # GitHub CLI
+brew "jq"               # Command-line JSON processor
+brew "yq"               # Command-line YAML processor
+
+# Modern replacements for traditional tools
+brew "ripgrep"          # Fast grep replacement (rg)
+brew "fd"               # Fast find replacement
+brew "bat"              # Better cat with syntax highlighting
+brew "eza"              # Better ls with colors and icons
+brew "delta"            # Better git diff
+brew "htop"             # Better top
+brew "ncdu"             # NCurses disk usage
+
+# Development tools
+brew "neovim"           # Modern vim
+brew "tmux"             # Terminal multiplexer
+brew "fzf"              # Fuzzy finder
+brew "direnv"           # Directory-specific environment variables
+brew "shellcheck"       # Shell script linter
+
+{{- if .is_personal }}
+# Personal tools
+brew "youtube-dl"       # Download videos
+brew "ffmpeg"           # Media converter
+brew "imagemagick"      # Image manipulation
+{{- end }}
+
+{{- if .has_1password }}
+# Security tools
+cask "1password-cli"    # 1Password CLI
+{{- end }}
+
+# Platform-specific tools
+{{- if .is_macos }}
+# macOS specific tools
+brew "mas"              # Mac App Store CLI
+brew "trash"            # Move files to trash instead of rm
+brew "duti"             # Set default applications for file types
+
+# Casks (GUI applications)
+{{- if .is_personal }}
+cask "visual-studio-code"
+cask "docker"
+cask "firefox"
+cask "spotify"
+cask "discord"
+{{- end }}
+
+{{- if .is_corporate }}
+cask "slack"
+cask "zoom"
+cask "microsoft-teams"
+{{- end }}
+{{- end }}

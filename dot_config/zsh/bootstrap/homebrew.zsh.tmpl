@@ -1,0 +1,19 @@
+# Homebrew Bootstrap Configuration
+
+{{- if .is_macos }}
+# Ensure Homebrew is in PATH
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+    # Apple Silicon Mac
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/usr/local/bin/brew" ]]; then
+    # Intel Mac
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Set Homebrew environment variables
+if command -v brew &>/dev/null; then
+    export HOMEBREW_NO_ANALYTICS=1
+    export HOMEBREW_NO_AUTO_UPDATE=1
+    export HOMEBREW_BUNDLE_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/homebrew/Brewfile"
+fi
+{{- end }}

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Install packages from Brewfile
+# This script runs when the Brewfile changes
+
+{{- if .is_macos }}
+{{- if .has_brew }}
+echo "Installing packages from Brewfile..."
+
+BREWFILE="${XDG_CONFIG_HOME:-$HOME/.config}/homebrew/Brewfile"
+
+if [[ -f "$BREWFILE" ]]; then
+    echo "Found Brewfile at: $BREWFILE"
+    
+    # Install packages from Brewfile
+    brew bundle --file="$BREWFILE" --no-lock
+    
+    # Cleanup old versions
+    echo "Cleaning up old Homebrew packages..."
+    brew cleanup
+    
+    echo "✓ Package installation complete!"
+else
+    echo "✗ Brewfile not found at: $BREWFILE"
+    exit 1
+fi
+{{- else }}
+echo "Homebrew not installed. Run chezmoi apply again after Homebrew is installed."
+{{- end }}
+{{- else }}
+echo "Skipping Homebrew package installation (not on macOS)"
+{{- end }}

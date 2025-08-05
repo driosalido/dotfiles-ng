@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Install Homebrew on macOS if not already installed
+# Only runs on macOS systems
+
+{{- if .is_macos }}
+if ! command -v brew &> /dev/null; then
+    echo "Homebrew not found. Installing Homebrew..."
+    
+    # Install Homebrew using the official installation script
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    
+    # Add Homebrew to PATH for the current session
+    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+        # Apple Silicon Mac
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f "/usr/local/bin/brew" ]]; then
+        # Intel Mac
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+    
+    echo "Homebrew installed successfully!"
+    
+    # Update Homebrew
+    echo "Updating Homebrew..."
+    brew update
+    
+    # Install essential packages
+    echo "Installing essential Homebrew packages..."
+    brew install \
+        coreutils \
+        findutils \
+        gnu-sed \
+        gawk \
+        grep \
+        curl \
+        wget \
+        git \
+        jq \
+        ripgrep \
+        fd \
+        bat \
+        eza \
+        delta \
+        gh
+        
+    echo "Essential packages installed!"
+else
+    echo "Homebrew is already installed at $(which brew)"
+    
+    # Ensure Homebrew is up to date
+    echo "Updating Homebrew..."
+    brew update
+fi
+
+# Verify installation
+if command -v brew &> /dev/null; then
+    echo "✓ Homebrew is ready!"
+    echo "  Version: $(brew --version | head -n1)"
+    echo "  Location: $(which brew)"
+else
+    echo "✗ Homebrew installation failed!"
+    exit 1
+fi
+{{- else }}
+echo "Skipping Homebrew installation (not on macOS)"
+{{- end }}
