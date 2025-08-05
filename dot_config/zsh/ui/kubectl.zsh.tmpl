@@ -1,0 +1,94 @@
+# Kubernetes (kubectl) Configuration
+
+{{- if lookPath "kubectl" }}
+# Only configure kubectl if it's installed
+if command -v kubectl >/dev/null 2>&1; then
+    
+    # Enable kubectl autocompletion for zsh
+    # Cache the completion to improve shell startup time
+    kubectl_completion_file="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/kubectl_completion"
+    
+    # Create cache directory if it doesn't exist
+    mkdir -p "$(dirname "$kubectl_completion_file")"
+    
+    # Generate completion if cache doesn't exist or kubectl is newer
+    if [[ ! -f "$kubectl_completion_file" ]] || [[ "$(command -v kubectl)" -nt "$kubectl_completion_file" ]]; then
+        kubectl completion zsh > "$kubectl_completion_file"
+    fi
+    
+    # Source the cached completion
+    source "$kubectl_completion_file"
+    
+    # Make completion work with 'k' alias
+    compdef k=kubectl
+    
+    # Additional useful kubectl aliases
+    alias kgp='kubectl get pods'
+    alias kgs='kubectl get services'  
+    alias kgd='kubectl get deployments'
+    alias kgn='kubectl get namespaces'
+    alias kga='kubectl get all'
+    alias kdp='kubectl describe pod'
+    alias kds='kubectl describe service'
+    alias kdd='kubectl describe deployment'
+    alias kaf='kubectl apply -f'
+    alias kdf='kubectl delete -f'
+    alias kl='kubectl logs'
+    alias klf='kubectl logs -f'
+    alias ke='kubectl exec -it'
+    alias kpf='kubectl port-forward'
+    alias kctx='kubectl config current-context'
+    alias kns='kubectl config set-context --current --namespace'
+    
+    # Function to switch kubectl context with fzf (if available)
+    if command -v fzf >/dev/null 2>&1; then
+        kctx-switch() {
+            local context
+            context=$(kubectl config get-contexts -o name | fzf --prompt="Select kubectl context: ")
+            if [[ -n "$context" ]]; then
+                kubectl config use-context "$context"
+                echo "Switched to context: $context"
+            fi
+        }
+        
+        # Function to switch namespace with fzf
+        kns-switch() {
+            local namespace
+            namespace=$(kubectl get namespaces -o name | cut -d/ -f2 | fzf --prompt="Select namespace: ")
+            if [[ -n "$namespace" ]]; then
+                kubectl config set-context --current --namespace="$namespace"
+                echo "Switched to namespace: $namespace"
+            fi
+        }
+        
+        # Function to select and describe pods with fzf
+        kdp-select() {
+            local pod
+            pod=$(kubectl get pods -o name | cut -d/ -f2 | fzf --prompt="Select pod to describe: ")
+            if [[ -n "$pod" ]]; then
+                kubectl describe pod "$pod"
+            fi
+        }
+        
+        # Function to select and get logs with fzf
+        kl-select() {
+            local pod
+            pod=$(kubectl get pods -o name | cut -d/ -f2 | fzf --prompt="Select pod for logs: ")
+            if [[ -n "$pod" ]]; then
+                kubectl logs "$pod" "${@}"
+            fi
+        }
+    fi
+    
+    # Quick context and namespace display function
+    k8s-info() {
+        echo "Current Context: $(kubectl config current-context)"
+        echo "Current Namespace: $(kubectl config view --minify --output 'jsonpath={..namespace}' || echo 'default')"
+    }
+    
+fi
+{{- else }}
+# kubectl not found - provide installation hint
+echo "💡 Tip: Install kubectl for Kubernetes management:"
+echo "   brew install kubectl"
+{{- end }}
