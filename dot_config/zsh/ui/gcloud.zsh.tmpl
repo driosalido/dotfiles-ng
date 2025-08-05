@@ -1,0 +1,273 @@
+# Google Cloud CLI Integration with AI
+
+if command -v gcloud >/dev/null 2>&1; then
+    
+    # Enable gcloud completion for zsh
+    # Cache the completion to improve shell startup time
+    gcloud_completion_file="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/gcloud_completion"
+    
+    # Create cache directory if it doesn't exist
+    mkdir -p "$(dirname "$gcloud_completion_file")"
+    
+    # Generate completion if cache doesn't exist or gcloud is newer
+    if [[ ! -f "$gcloud_completion_file" ]] || [[ "$(command -v gcloud)" -nt "$gcloud_completion_file" ]]; then
+        gcloud completion zsh > "$gcloud_completion_file"
+    fi
+    
+    # Source the cached completion
+    source "$gcloud_completion_file"
+    
+    # Common gcloud aliases
+    alias gc='gcloud'
+    alias gcp='gcloud projects'
+    alias gcl='gcloud projects list'
+    alias gcs='gcloud config set'
+    alias gcg='gcloud config get-value'
+    alias gci='gcloud compute instances'
+    alias gcil='gcloud compute instances list'
+    alias gck='gcloud container clusters'
+    alias gckl='gcloud container clusters list'
+    alias gcr='gcloud run'
+    alias gcrl='gcloud run services list'
+    alias gcf='gcloud functions'
+    alias gcfl='gcloud functions list'
+    alias gcsql='gcloud sql instances list'
+    alias gciam='gcloud iam'
+    alias gclogs='gcloud logging'
+    
+    # Google Cloud AI Platform aliases
+    alias gai='gcloud ai'
+    alias gaimodel='gcloud ai models'
+    alias gaiendpoint='gcloud ai endpoints'
+    alias gvertex='gcloud ai-platform'
+    
+    # Duet AI / Gemini integration (if available)
+    alias gduet='gcloud alpha duet'
+    alias ggemini='gcloud alpha ai'
+    
+    # Enhanced functions for gcloud workflow
+    
+    # Quick project switcher with fzf
+    gcp-switch() {
+        if command -v fzf >/dev/null 2>&1; then
+            local project
+            project=$(gcloud projects list --format="value(projectId)" | fzf --prompt="Select GCP project: ")
+            if [[ -n "$project" ]]; then
+                gcloud config set project "$project"
+                echo "✅ Switched to project: $project"
+                gc-info
+            fi
+        else
+            echo "Usage: gcp-switch requires fzf for interactive selection"
+            echo "Available projects:"
+            gcloud projects list --format="table(projectId,name,lifecycleState)"
+        fi
+    }
+    
+    # Quick region switcher
+    gcr-switch() {
+        if command -v fzf >/dev/null 2>&1; then
+            local region
+            region=$(gcloud compute regions list --format="value(name)" | fzf --prompt="Select region: ")
+            if [[ -n "$region" ]]; then
+                gcloud config set compute/region "$region"
+                echo "✅ Switched to region: $region"
+            fi
+        else
+            echo "Usage: gcr-switch requires fzf"
+            gcloud compute regions list
+        fi
+    }
+    
+    # Quick zone switcher
+    gcz-switch() {
+        if command -v fzf >/dev/null 2>&1; then
+            local zone
+            zone=$(gcloud compute zones list --format="value(name)" | fzf --prompt="Select zone: ")
+            if [[ -n "$zone" ]]; then
+                gcloud config set compute/zone "$zone"
+                echo "✅ Switched to zone: $zone"
+            fi
+        else
+            echo "Usage: gcz-switch requires fzf"
+            gcloud compute zones list
+        fi
+    }
+    
+    # Current configuration info
+    gc-info() {
+        echo "🌐 Google Cloud Configuration:"
+        echo "============================="
+        echo "Project: $(gcloud config get-value project 2>/dev/null || echo 'Not set')"
+        echo "Account: $(gcloud config get-value account 2>/dev/null || echo 'Not set')"
+        echo "Region:  $(gcloud config get-value compute/region 2>/dev/null || echo 'Not set')"
+        echo "Zone:    $(gcloud config get-value compute/zone 2>/dev/null || echo 'Not set')"
+        echo ""
+        echo "Active configuration: $(gcloud config configurations list --filter='is_active:true' --format='value(name)' 2>/dev/null || echo 'default')"
+    }
+    
+    # Quick SSH to compute instance
+    gc-ssh() {
+        if [[ $# -eq 0 ]]; then
+            if command -v fzf >/dev/null 2>&1; then
+                local instance
+                instance=$(gcloud compute instances list --format="value(name,zone)" | fzf --prompt="Select instance to SSH: ")
+                if [[ -n "$instance" ]]; then
+                    local name=$(echo "$instance" | awk '{print $1}')
+                    local zone=$(echo "$instance" | awk '{print $2}')
+                    gcloud compute ssh "$name" --zone="$zone"
+                fi
+            else
+                echo "Usage: gc-ssh <instance-name> [zone]"
+                echo "Or install fzf for interactive selection"
+                gcloud compute instances list
+            fi
+        else
+            local instance="$1"
+            local zone="${2:-$(gcloud config get-value compute/zone)}"
+            gcloud compute ssh "$instance" --zone="$zone"
+        fi
+    }
+    
+    # AI-powered command helper (if Duet AI is available)
+    gai-help() {
+        if [[ $# -eq 0 ]]; then
+            echo "Usage: gai-help <question about GCP>"
+            echo "Example: gai-help 'How do I create a GKE cluster?'"
+            echo "         gai-help 'What are the steps to deploy a Cloud Run service?'"
+            return 1
+        fi
+        
+        local question="$*"
+        
+        # Try different AI endpoints that might be available
+        if gcloud alpha duet code-chat --message="$question" 2>/dev/null; then
+            return 0
+        elif gcloud alpha ai endpoints predict --endpoint="" --region="" --json-request="{\"prompt\": \"$question\"}" 2>/dev/null; then
+            return 0
+        else
+            echo "🤖 AI assistance not available. Here are some alternatives:"
+            echo ""
+            echo "1. 📚 Official docs: https://cloud.google.com/docs"
+            echo "2. 🔍 Search examples: gcloud help"
+            echo "3. 💬 Community: https://stackoverflow.com/questions/tagged/google-cloud-platform"
+            echo ""
+            echo "For your question: '$question'"
+            echo "Try: gcloud help | grep -i '$(echo "$question" | awk '{print $1}')'"
+        fi
+    }
+    
+    # Gemini code generation (experimental)
+    ggemini-code() {
+        if [[ $# -eq 0 ]]; then
+            echo "Usage: ggemini-code <describe what you want to do>"
+            echo "Example: ggemini-code 'create a cloud function that processes images'"
+            return 1
+        fi
+        
+        local prompt="Generate Google Cloud CLI commands to: $*"
+        
+        # This would use Gemini API if configured
+        echo "🤖 Generating GCP commands for: $*"
+        echo "💡 This feature requires Gemini API setup"
+        echo ""
+        echo "Manual alternatives:"
+        echo "1. gcloud help"
+        echo "2. gcloud <service> --help"
+        echo "3. Visit: https://cloud.google.com/sdk/gcloud/reference"
+    }
+    
+    # Quick service account key creation
+    gc-sa-key() {
+        if [[ $# -lt 1 ]]; then
+            echo "Usage: gc-sa-key <service-account-email> [output-file]"
+            return 1
+        fi
+        
+        local sa_email="$1"
+        local output_file="${2:-${sa_email}-key.json}"
+        
+        gcloud iam service-accounts keys create "$output_file" \
+            --iam-account="$sa_email"
+        
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Service account key created: $output_file"
+            echo "⚠️  Remember to keep this key secure and rotate it regularly"
+        fi
+    }
+    
+    # Container Registry/Artifact Registry helper
+    gc-docker-auth() {
+        local registry="${1:-gcr.io}"
+        
+        case "$registry" in
+            gcr.io|us.gcr.io|eu.gcr.io|asia.gcr.io)
+                gcloud auth configure-docker "$registry"
+                ;;
+            *.pkg.dev)
+                gcloud auth configure-docker "$registry"
+                ;;
+            *)
+                echo "🐳 Configuring Docker for common registries..."
+                gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io
+                echo "💡 For Artifact Registry, use: gc-docker-auth <region>-docker.pkg.dev"
+                ;;
+        esac
+    }
+    
+    # Quick cloud run deployment
+    gc-run-deploy() {
+        if [[ $# -lt 2 ]]; then
+            echo "Usage: gc-run-deploy <service-name> <image-url> [region]"
+            echo "Example: gc-run-deploy my-app gcr.io/my-project/my-app:latest us-central1"
+            return 1
+        fi
+        
+        local service="$1"
+        local image="$2"
+        local region="${3:-$(gcloud config get-value run/region 2>/dev/null || echo 'us-central1')}"
+        
+        gcloud run deploy "$service" \
+            --image="$image" \
+            --region="$region" \
+            --platform=managed \
+            --allow-unauthenticated
+        
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Cloud Run service deployed successfully"
+            gcloud run services describe "$service" --region="$region" --format="value(status.url)"
+        fi
+    }
+    
+    # Status check for common services
+    gc-status() {
+        echo "🔍 Google Cloud Services Status"
+        echo "==============================="
+        
+        echo ""
+        echo "📊 Compute Instances:"
+        gcloud compute instances list --format="table(name,zone,status)" --limit=5 2>/dev/null || echo "None or error"
+        
+        echo ""
+        echo "🚀 Cloud Run Services:"
+        gcloud run services list --format="table(metadata.name,status.url,status.traffic.percent)" --limit=5 2>/dev/null || echo "None or error"
+        
+        echo ""
+        echo "☸️  GKE Clusters:"
+        gcloud container clusters list --format="table(name,location,status)" --limit=5 2>/dev/null || echo "None or error"
+        
+        echo ""
+        echo "💾 Cloud SQL Instances:"
+        gcloud sql instances list --format="table(name,region,databaseVersion,state)" --limit=5 2>/dev/null || echo "None or error"
+    }
+
+else
+    # gcloud not installed - provide installation instructions
+    echo "💡 Google Cloud CLI not found. To install:"
+    {{- if .is_macos }}
+    echo "   brew install google-cloud-sdk"
+    {{- else }}
+    echo "   curl https://sdk.cloud.google.com | bash"
+    {{- end }}
+    echo "   Then run: gcloud init"
+fi
