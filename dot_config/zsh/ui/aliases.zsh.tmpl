@@ -60,6 +60,9 @@ command -v bat >/dev/null && alias cat='bat'
 command -v exa >/dev/null && alias ls='exa' && alias ll='exa -l' && alias la='exa -la'
 command -v fd >/dev/null && alias find='fd'
 
+# Kubernetes aliases
+command -v kubectl >/dev/null && alias k='kubectl'
+
 # Editor shortcuts
 if command -v nvim >/dev/null; then
     alias v='nvim'
