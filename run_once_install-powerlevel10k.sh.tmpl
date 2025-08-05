@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Install Powerlevel10k theme for Oh My Zsh
-# Only run if oh-my-zsh is installed
+# Check for Oh My Zsh installation at runtime
 
-{{- if .has_ohmyzsh }}
+if [[ -d "${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh" ]] || [[ -d "$HOME/.oh-my-zsh" ]]; then
 POWERLEVEL10K_DIR="${ZSH_CUSTOM:-${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh/custom}/themes/powerlevel10k"
 
 if [ ! -d "$POWERLEVEL10K_DIR" ]; then
@@ -65,6 +65,7 @@ fi
 echo ""
 echo "Note: Make sure to select 'MesloLGS NF' as your terminal font for the best experience."
 echo ""
-{{- else }}
-echo "Oh My Zsh not installed, skipping Powerlevel10k installation"
-{{- end }}
+else
+    echo "Oh My Zsh not found, skipping Powerlevel10k installation"
+    echo "Install Oh My Zsh first, then run 'chezmoi apply' again"
+fi
