@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Install fzf key bindings and fuzzy completion
+# This runs after fzf is installed via Homebrew
+
+{{- if .has_brew }}
+if command -v fzf &> /dev/null; then
+    echo "Setting up fzf key bindings and completion..."
+    
+    # Get the fzf installation path
+    if [[ -d "/opt/homebrew/opt/fzf" ]]; then
+        FZF_BASE="/opt/homebrew/opt/fzf"
+    elif [[ -d "/usr/local/opt/fzf" ]]; then
+        FZF_BASE="/usr/local/opt/fzf"
+    elif [[ -d "/home/linuxbrew/.linuxbrew/opt/fzf" ]]; then
+        FZF_BASE="/home/linuxbrew/.linuxbrew/opt/fzf"
+    else
+        echo "Could not find fzf installation directory"
+        exit 1
+    fi
+    
+    # Install useful fzf scripts
+    if [[ -f "$FZF_BASE/install" ]]; then
+        "$FZF_BASE/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
+    fi
+    
+    echo "✓ fzf setup complete!"
+else
+    echo "fzf not found. It will be configured after installation."
+fi
+{{- end }}

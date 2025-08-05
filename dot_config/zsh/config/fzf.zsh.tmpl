@@ -1,0 +1,105 @@
+# FZF Configuration
+
+{{- if .has_brew }}
+# Source fzf key bindings and completion
+if command -v fzf &> /dev/null; then
+    # Find fzf installation directory
+    if [[ -d "/opt/homebrew/opt/fzf" ]]; then
+        FZF_BASE="/opt/homebrew/opt/fzf"
+    elif [[ -d "/usr/local/opt/fzf" ]]; then
+        FZF_BASE="/usr/local/opt/fzf"
+    elif [[ -d "/home/linuxbrew/.linuxbrew/opt/fzf" ]]; then
+        FZF_BASE="/home/linuxbrew/.linuxbrew/opt/fzf"
+    fi
+    
+    # Source key bindings and completion if available
+    [[ -f "$FZF_BASE/shell/key-bindings.zsh" ]] && source "$FZF_BASE/shell/key-bindings.zsh"
+    [[ -f "$FZF_BASE/shell/completion.zsh" ]] && source "$FZF_BASE/shell/completion.zsh"
+fi
+
+# FZF Settings
+export FZF_DEFAULT_OPTS="
+    --height 40%
+    --layout=reverse
+    --border
+    --inline-info
+    --preview-window=:hidden
+    --bind='ctrl-/:toggle-preview'
+    --bind='ctrl-y:execute-silent(echo {} | pbcopy)+abort'
+    --color=dark
+    --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+    --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+"
+
+# Use fd for better performance if available
+if command -v fd &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+elif command -v rg &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+
+# Preview settings
+export FZF_CTRL_T_OPTS="
+    --preview 'bat --style=numbers --color=always --line-range :500 {} 2>/dev/null || cat {}'
+    --preview-window=right:50%:wrap
+"
+
+export FZF_ALT_C_OPTS="
+    --preview 'eza --tree --level=2 --color=always {} 2>/dev/null || ls -la {}'
+    --preview-window=right:50%:wrap
+"
+
+# Better history search
+export FZF_CTRL_R_OPTS="
+    --preview 'echo {}'
+    --preview-window=down:3:wrap
+    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+"
+
+# Custom functions using fzf
+# Kill process
+fkill() {
+    local pid
+    pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    
+    if [ "x$pid" != "x" ]; then
+        echo $pid | xargs kill -${1:-9}
+    fi
+}
+
+# Git branch selector
+fbr() {
+    local branches branch
+    branches=$(git branch --all | grep -v HEAD) &&
+    branch=$(echo "$branches" | fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+# Git commit browser
+fshow() {
+    git log --graph --color=always \
+        --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+    fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+        --bind "ctrl-m:execute:
+            (grep -o '[a-f0-9]\{7\}' | head -1 |
+            xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+            {}
+FZF-EOF"
+}
+
+# cd to selected directory including hidden ones
+fcd() {
+    local dir
+    dir=$(fd --type d --hidden --follow --exclude .git 2> /dev/null | fzf +m) && cd "$dir"
+}
+
+# Open file in editor
+fe() {
+    local files
+    files=$(fzf --query="$1" --multi --select-1 --exit-0)
+    [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+{{- end }}
