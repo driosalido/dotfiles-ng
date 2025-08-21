@@ -1,8 +1,25 @@
 # Zsh Completion System Configuration
 
+# Fix insecure directories warning for macOS with Homebrew
+# This is common when using Homebrew-installed zsh
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Check and fix permissions on common problematic directories
+    for dir in /usr/local/share/zsh /usr/local/share/zsh/site-functions \
+               /opt/homebrew/share/zsh /opt/homebrew/share/zsh/site-functions; do
+        if [[ -d "$dir" && -w "$dir" ]]; then
+            # Only fix if we own the directory
+            if [[ -O "$dir" ]]; then
+                chmod 755 "$dir" 2>/dev/null || true
+            fi
+        fi
+    done
+fi
+
 # Initialize completion system
 autoload -Uz compinit
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+# Use -u flag to skip security check if still having issues
+# Remove -u if you want strict security checking
+compinit -u -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
 # Completion options
 setopt COMPLETE_IN_WORD     # Complete from both ends of a word
