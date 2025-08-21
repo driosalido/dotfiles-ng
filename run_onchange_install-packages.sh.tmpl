@@ -18,6 +18,24 @@ if [[ -f "$BREWFILE" ]]; then
     echo "Cleaning up old Homebrew packages..."
     brew cleanup
     
+    # Fix Docker completion permissions if Docker is installed
+    {{- if .is_macos }}
+    if [[ -d "/Applications/Docker.app" ]]; then
+        echo "Fixing Docker completion permissions..."
+        # Fix permissions on Docker completion symlinks
+        for file in /opt/homebrew/share/zsh/site-functions/_docker* /usr/local/share/zsh/site-functions/_docker*; do
+            if [[ -L "$file" ]]; then
+                # Get the target of the symlink
+                target=$(readlink "$file")
+                # Fix permissions on the target if it exists
+                if [[ -f "$target" ]]; then
+                    chmod 644 "$target" 2>/dev/null || true
+                fi
+            fi
+        done
+    fi
+    {{- end }}
+    
     echo "✓ Package installation complete!"
 else
     echo "✗ Brewfile not found at: $BREWFILE"

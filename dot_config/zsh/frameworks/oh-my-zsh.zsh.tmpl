@@ -4,6 +4,10 @@
 # Oh My Zsh setup (XDG compliant)
 export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 
+# Disable Oh-My-Zsh's security check to prevent console output during initialization
+# This prevents conflicts with Powerlevel10k's instant prompt
+export ZSH_DISABLE_COMPFIX=true
+
 # Theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
