@@ -49,11 +49,13 @@ brew "imagemagick"      # Image manipulation
 
 {{- if .use_secrets }}
 # Security tools
-brew "1password-cli"    # 1Password CLI (op command)
+# 1Password CLI - using cask as the formula was deprecated
+cask "1password-cli"    # 1Password CLI (op command)
 {{- end }}
 
 # Cloud tools
-brew "google-cloud-sdk" # Google Cloud CLI (gcloud command)
+# Google Cloud SDK - now installed via cask
+cask "google-cloud-sdk" # Google Cloud CLI (gcloud command)
 
 # Platform-specific tools
 {{- if .is_macos }}
