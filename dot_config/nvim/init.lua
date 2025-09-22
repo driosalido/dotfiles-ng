@@ -48,7 +48,8 @@ vim.opt.splitright = true          -- Split right
 
 -- Performance
 vim.opt.updatetime = 50            -- Faster completion
-vim.opt.timeoutlen = 300           -- Faster key sequence completion
+vim.opt.timeoutlen = 1000          -- Give more time for key sequences
+vim.opt.ttimeoutlen = 50           -- Fast escape sequences
 
 -- Mouse
 vim.opt.mouse = "a"                -- Enable mouse support
