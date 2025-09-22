@@ -184,9 +184,9 @@ require("lazy").setup({
       vim.g.mkdp_filetypes = {'markdown'}
       
       -- Key mappings for markdown preview
-      keymap("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", opts)
-      keymap("n", "<leader>ms", ":MarkdownPreview<CR>", opts)
-      keymap("n", "<leader>mx", ":MarkdownPreviewStop<CR>", opts)
+      vim.keymap.set("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<leader>ms", ":MarkdownPreview<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<leader>mx", ":MarkdownPreviewStop<CR>", { noremap = true, silent = true })
     end,
   },
 })
