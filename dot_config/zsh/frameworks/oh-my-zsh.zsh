@@ -1,6 +1,4 @@
 # Oh My Zsh Configuration
-
-{{- if .has_ohmyzsh }}
 # Oh My Zsh setup (XDG compliant)
 export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 
@@ -17,13 +15,8 @@ plugins=(
     zsh-autosuggestions
     zsh-syntax-highlighting
     colored-man-pages
-    {{- if .is_macos }}
     brew
     macos
-    {{- end }}
-    {{- if .is_linux }}
-    ubuntu
-    {{- end }}
 )
 
 # Load Oh My Zsh
@@ -43,7 +36,3 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=green'  # Green suggestions for better visib
 # Configure autosuggestions behavior
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)  # Use both history and completion
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20              # Don't suggest for very long commands
-{{- else }}
-# Oh My Zsh not installed - using fallback prompt
-PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
-{{- end }}
