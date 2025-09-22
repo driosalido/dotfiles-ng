@@ -148,7 +148,7 @@ vim.cmd([[
 
 -- Plugin Configuration
 require("lazy").setup({
-  -- Markdown Preview Plugin
+  -- Markdown Preview Plugin (Browser)
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
@@ -185,6 +185,92 @@ require("lazy").setup({
       vim.g.mkdp_filetypes = {'markdown'}
     end,
   },
+
+  -- Inline Markdown Rendering Plugin
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ft = { "markdown" },
+    config = function()
+      require('render-markdown').setup({
+        -- Configure how different headings are rendered
+        headings = {
+          -- Turn on / off heading icon & background rendering
+          enabled = true,
+          -- Turn on / off any sign column related rendering
+          sign = true,
+          -- Replaces '#+' of headings
+          icons = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
+          -- Added to the sign column if enabled
+          signs = { '󰫎 ' },
+          -- Width of the heading background:
+          --  block: width of the heading text
+          --  full: full width of the window
+          width = 'full',
+          -- The 'level' is used to index into the array using a cycle
+          backgrounds = {
+            'RenderMarkdownH1Bg',
+            'RenderMarkdownH2Bg',
+            'RenderMarkdownH3Bg',
+            'RenderMarkdownH4Bg',
+            'RenderMarkdownH5Bg',
+            'RenderMarkdownH6Bg',
+          },
+          -- The 'level' is used to index into the array using a cycle
+          foregrounds = {
+            'RenderMarkdownH1',
+            'RenderMarkdownH2',
+            'RenderMarkdownH3',
+            'RenderMarkdownH4',
+            'RenderMarkdownH5',
+            'RenderMarkdownH6',
+          },
+        },
+        -- Configure how code blocks are rendered
+        code = {
+          -- Turn on / off code block & inline code rendering
+          enabled = true,
+          -- Turn on / off any sign column related rendering
+          sign = true,
+          -- Determines how code blocks & inline code are rendered:
+          --  none: disables all rendering
+          --  normal: adds highlight group to code blocks & inline code
+          --  language: adds language icon to sign column if enabled and icon + name above code blocks
+          --  full: normal + language
+          style = 'full',
+          -- Amount of padding to add to the left of code blocks
+          left_pad = 2,
+          -- Amount of padding to add to the right of code blocks when width is 'block'
+          right_pad = 2,
+          -- Width of the code block background:
+          --  block: width of the code block
+          --  full: full width of the window
+          width = 'full',
+          -- Determins how the top / bottom of code block are rendered:
+          --  thick: use the same highlight as the code body
+          --  thin: when lines are empty overlay the above & below icons
+          border = 'thin',
+          -- Used above code blocks for thin border
+          above = '▄',
+          -- Used below code blocks for thin border
+          below = '▀',
+          -- Highlight for code blocks & inline code
+          highlight = 'RenderMarkdownCode',
+        },
+        -- Configure how bullet points are rendered
+        bullet = {
+          -- Turn on / off list bullet rendering
+          enabled = true,
+          -- Replaces '-'|'+'|'*' of 'list_item'
+          icons = { '●', '○', '◆', '◇' },
+          -- Highlight for the bullet icon
+          highlight = 'RenderMarkdownBullet',
+        },
+      })
+    end,
+  },
 })
 
 -- Additional markdown-specific settings
@@ -202,3 +288,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>ms", ":MarkdownPreview<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>mx", ":MarkdownPreviewStop<CR>", { noremap = true, silent = true })
+
+-- Inline Markdown Rendering Key mappings
+vim.keymap.set("n", "<leader>mr", ":RenderMarkdown toggle<CR>", { noremap = true, silent = true })
