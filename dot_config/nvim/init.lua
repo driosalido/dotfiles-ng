@@ -182,11 +182,6 @@ require("lazy").setup({
       vim.g.mkdp_port = ''
       vim.g.mkdp_page_title = '「${name}」'
       vim.g.mkdp_filetypes = {'markdown'}
-      
-      -- Key mappings for markdown preview
-      vim.keymap.set("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>ms", ":MarkdownPreview<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>mx", ":MarkdownPreviewStop<CR>", { noremap = true, silent = true })
     end,
   },
 })
@@ -201,3 +196,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.concealcursor = "nc"
   end,
 })
+
+-- Markdown Preview Key mappings (global)
+keymap("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", opts)
+keymap("n", "<leader>ms", ":MarkdownPreview<CR>", opts)
+keymap("n", "<leader>mx", ":MarkdownPreviewStop<CR>", opts)
