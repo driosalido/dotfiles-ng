@@ -1,6 +1,20 @@
 -- Neovim Configuration
 -- A modern, minimal configuration
 
+-- Bootstrap lazy.nvim plugin manager
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
 -- Basic Settings
 vim.opt.number = true              -- Show line numbers
 vim.opt.relativenumber = true      -- Show relative line numbers
@@ -130,3 +144,60 @@ vim.cmd([[
         colorscheme default
     endtry
 ]])
+
+-- Plugin Configuration
+require("lazy").setup({
+  -- Markdown Preview Plugin
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+    config = function()
+      -- Plugin settings
+      vim.g.mkdp_auto_start = 0
+      vim.g.mkdp_auto_close = 1
+      vim.g.mkdp_refresh_slow = 0
+      vim.g.mkdp_command_for_global = 0
+      vim.g.mkdp_open_to_the_world = 0
+      vim.g.mkdp_open_ip = ''
+      vim.g.mkdp_browser = ''
+      vim.g.mkdp_echo_preview_url = 0
+      vim.g.mkdp_browserfunc = ''
+      vim.g.mkdp_preview_options = {
+        mkit = {},
+        katex = {},
+        uml = {},
+        maid = {},
+        disable_sync_scroll = 0,
+        sync_scroll_type = 'middle',
+        hide_yaml_meta = 1,
+        sequence_diagrams = {},
+        flowchart_diagrams = {},
+        content_editable = false,
+        disable_filename = 0
+      }
+      vim.g.mkdp_markdown_css = ''
+      vim.g.mkdp_highlight_css = ''
+      vim.g.mkdp_port = ''
+      vim.g.mkdp_page_title = '「${name}」'
+      vim.g.mkdp_filetypes = {'markdown'}
+      
+      -- Key mappings for markdown preview
+      keymap("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", opts)
+      keymap("n", "<leader>ms", ":MarkdownPreview<CR>", opts)
+      keymap("n", "<leader>mx", ":MarkdownPreviewStop<CR>", opts)
+    end,
+  },
+})
+
+-- Additional markdown-specific settings
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.conceallevel = 2
+    vim.opt_local.concealcursor = "nc"
+  end,
+})
