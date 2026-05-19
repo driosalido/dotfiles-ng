@@ -234,13 +234,4 @@ if command -v gcloud >/dev/null 2>&1; then
         gcloud sql instances list --format="table(name,region,databaseVersion,state)" --limit=5 2>/dev/null || echo "None or error"
     }
 
-else
-    # gcloud not installed - provide installation instructions
-    echo "💡 Google Cloud CLI not found. To install:"
-    {{- if .is_macos }}
-    echo "   brew install google-cloud-sdk"
-    {{- else }}
-    echo "   curl https://sdk.cloud.google.com | bash"
-    {{- end }}
-    echo "   Then run: gcloud init"
 fi

@@ -87,8 +87,4 @@ if command -v kubectl >/dev/null 2>&1; then
     }
     
 fi
-{{- else }}
-# kubectl not found - provide installation hint
-echo "💡 Tip: Install kubectl for Kubernetes management:"
-echo "   brew install kubectl"
 {{- end }}
