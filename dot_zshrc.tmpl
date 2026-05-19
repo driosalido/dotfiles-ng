@@ -1,9 +1,19 @@
 # Zsh configuration for {{ .name }}
 # This file sources the modular configuration from ~/.config/zsh/
 
-# Define XDG directories first (needed for the source path)
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-# Source the modular zsh configuration
 source "$XDG_CONFIG_HOME/zsh/zshrc"
+
+{{- if .is_macos }}
+
+# LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+[ -f "$HOME/.nvm-auto-use.sh" ] && source "$HOME/.nvm-auto-use.sh"
+{{- end }}
