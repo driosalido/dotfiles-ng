@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+{{- if not .is_linux }}
+exit 0
+{{- end }}
+
+# Skip if not on a dnf-based distro
+if ! command -v dnf &> /dev/null; then
+    echo "Not a dnf-based system; skipping Fedora packages."
+    exit 0
+fi
+
+echo "Installing Fedora packages via dnf..."
+
+# Core CLI
+sudo dnf install -y \
+    curl wget git gh \
+    jq yq \
+    ShellCheck
+
+# Modern replacements
+sudo dnf install -y \
+    ripgrep fd-find bat eza git-delta \
+    htop ncdu
+
+# Dev tools
+sudo dnf install -y \
+    neovim tmux fzf direnv zoxide
+
+# Build essentials
+sudo dnf install -y gcc make
+
+{{- if .is_personal }}
+# Personal tools
+sudo dnf install -y yt-dlp ImageMagick ffmpeg
+{{- end }}
+
+# Note: peco intentionally skipped — fzf covers the use case
+# Note: google-cloud-cli and 1password-cli need their own repos — install separately if needed
+
+echo "✓ Fedora packages installed."

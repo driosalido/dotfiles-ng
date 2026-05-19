@@ -89,11 +89,7 @@ cask "microsoft-teams"
 {{- end }}
 
 {{- if .is_linux }}
-# Linux-specific tools
-brew "gcc"              # GNU Compiler Collection (often needed for building)
-brew "util-linux"       # Linux utilities
-brew "procps"           # Process utilities (ps, top, etc.)
-
-# Note: GUI applications on Linux should be installed via native package manager
-# Homebrew on Linux focuses on CLI tools and development dependencies
+# Linux package installs are handled by run_onchange_install-packages-fedora.sh.tmpl
+# via dnf. The Brewfile only runs when has_brew=true (Linuxbrew). Intentionally
+# kept narrow to avoid the cask-on-Linuxbrew problem.
 {{- end }}
