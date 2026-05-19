@@ -1,7 +1,7 @@
 [data]
     name = "David Riosalido"
     # Auto-detect email from git config, fallback to prompt
-    email = "{{ or (env "GIT_AUTHOR_EMAIL") (output "git" "config" "--global" "user.email" | trim) "user@example.com" }}"
+    email = "{{ or (env "GIT_AUTHOR_EMAIL") "driosalido@gmail.com" }}"
     
     # Environment detection - default to personal, can be overridden
     is_personal = {{ env "DOTFILES_PERSONAL" | default "true" }}
