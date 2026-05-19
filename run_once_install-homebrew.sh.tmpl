@@ -1,5 +1,9 @@
 #!/bin/bash
 
+{{- if not .is_macos }}
+exit 0
+{{- end }}
+
 # Install Homebrew on macOS and Linux if not already installed
 if ! command -v brew &> /dev/null; then
     echo "Homebrew not found. Installing Homebrew..."
