@@ -24,12 +24,26 @@ sudo dnf install -y \
     ripgrep fd-find bat eza git-delta \
     htop ncdu
 
-# Dev tools
+# Dev tools (wl-clipboard for nvim/fzf clipboard on Wayland; nodejs-npm for nvim markdown-preview build)
 sudo dnf install -y \
-    neovim tmux fzf direnv zoxide
+    neovim tmux fzf direnv zoxide \
+    wl-clipboard nodejs-npm cascadia-code-nf-fonts
 
 # Build essentials
 sudo dnf install -y gcc make
+
+# Kubernetes (needs official k8s repo — not in Fedora defaults)
+if [[ ! -f /etc/yum.repos.d/kubernetes.repo ]]; then
+    sudo tee /etc/yum.repos.d/kubernetes.repo > /dev/null <<'EOF'
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
+EOF
+fi
+sudo dnf install -y kubectl
 
 {{- if .is_personal }}
 # Personal tools

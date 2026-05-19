@@ -15,8 +15,10 @@ plugins=(
     zsh-autosuggestions
     zsh-syntax-highlighting
     colored-man-pages
+    {{- if .is_macos }}
     brew
     macos
+    {{- end }}
 )
 
 # Load Oh My Zsh

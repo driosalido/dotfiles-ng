@@ -6,3 +6,6 @@ ROADMAP.md
 CLAUDE.md
 LICENSE
 .github/
+
+# Never track auth tokens
+.config/gh/hosts.yml
