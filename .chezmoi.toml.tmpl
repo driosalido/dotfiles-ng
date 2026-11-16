@@ -16,7 +16,6 @@
     has_brew = {{ if lookPath "brew" }}true{{ else }}false{{ end }}
     has_delta = {{ if lookPath "delta" }}true{{ else }}false{{ end }}
     has_code = {{ if lookPath "code" }}true{{ else }}false{{ end }}
-    has_ohmyzsh = {{ if stat (joinPath .chezmoi.homeDir ".local/share/oh-my-zsh") }}true{{ else }}false{{ end }}
     
     # XDG directories
     xdg_bin_home = "{{ .chezmoi.homeDir }}/.local/bin"

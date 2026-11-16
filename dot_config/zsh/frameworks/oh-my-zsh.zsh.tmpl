@@ -21,6 +21,9 @@ plugins=(
     zsh-syntax-highlighting  # must be last
 )
 
+# Updates are handled by chezmoi (.chezmoiexternal.toml), not by Oh My Zsh
+zstyle ':omz:update' mode disabled
+
 # Load Oh My Zsh
 source "$ZSH/oh-my-zsh.sh"
 

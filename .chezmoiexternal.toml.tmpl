@@ -1,0 +1,41 @@
+# Third-party code pulled by chezmoi (cloned if missing, `git pull` at most once a week).
+# Force an update now: chezmoi apply --refresh-externals   (or: chezmoi apply -R)
+
+[".local/share/oh-my-zsh"]
+    type = "git-repo"
+    url = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "168h"
+    clone.args = ["--depth", "1"]
+    pull.args = ["--ff-only"]
+
+[".local/share/oh-my-zsh/custom/themes/powerlevel10k"]
+    type = "git-repo"
+    url = "https://github.com/romkatv/powerlevel10k.git"
+    refreshPeriod = "168h"
+    clone.args = ["--depth", "1"]
+    pull.args = ["--ff-only"]
+
+[".local/share/oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-autosuggestions.git"
+    refreshPeriod = "168h"
+    clone.args = ["--depth", "1"]
+    pull.args = ["--ff-only"]
+
+[".local/share/oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    refreshPeriod = "168h"
+    clone.args = ["--depth", "1"]
+    pull.args = ["--ff-only"]
+
+# MesloLGS NF (recommended font for Powerlevel10k). macOS gets Nerd Fonts from the Brewfile casks.
+{{- if .is_linux }}
+{{- $fontDir := ".local/share/fonts" }}
+{{- range list "Regular" "Bold" "Italic" "Bold Italic" }}
+
+["{{ $fontDir }}/MesloLGS NF {{ . }}.ttf"]
+    type = "file"
+    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20{{ . | replace " " "%20" }}.ttf"
+{{- end }}
+{{- end }}
