@@ -9,3 +9,5 @@ LICENSE
 
 # Never track auth tokens
 .config/gh/hosts.yml
+# Repository docs
+docs/

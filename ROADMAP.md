@@ -1,55 +1,63 @@
 # Dotfiles-NG Roadmap
 
-Este documento contiene la lista de funcionalidades planificadas para implementar en nuestro sistema de dotfiles basado en chezmoi.
+Planned features for this chezmoi-based dotfiles setup.
 
-## ✅ Funcionalidades Completadas
+## ✅ Completed
 
 ### Core Foundation
-- [x] **Chezmoi Setup**: Configuración base con templates
-- [x] **Platform Detection**: Detección automática de macOS/Linux
-- [x] **Git Configuration**: Template multiplataforma con variables personalizadas
-- [x] **XDG Compliance**: Implementación del XDG Base Directory Specification
-- [x] **One-liner Installation**: Instalación completa con `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng`
-- [x] **Smart Defaults**: Auto-detección de email, configuración sin prompts
+- [x] **Chezmoi Setup**: Base configuration with templates
+- [x] **Platform Detection**: Automatic macOS/Linux detection
+- [x] **Git Configuration**: Cross-platform template with personal variables
+- [x] **XDG Compliance**: XDG Base Directory Specification
+- [x] **One-liner Installation**: Full install with `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng`
+- [x] **Smart Defaults**: Email auto-detection, no prompts
 
 ### Shell Configuration
-- [x] **Basic Shell Config**: Configuración básica de zsh (bash eliminado)
-- [x] **Modular Zsh Configuration**: Estructura modular en `~/.config/zsh/` con orden de carga definido
-- [x] **Oh-My-Zsh Integration**: Instalación automática y configuración XDG-compliant
-- [x] **Powerlevel10k Theme**: Instalación automática con configuración personalizada
-- [x] **Nerd Font Installation**: Instalación automática de MesloLGS NF para macOS/Linux
+- [x] **Basic Shell Config**: zsh only (bash removed)
+- [x] **Modular Zsh Configuration**: Modules in `~/.config/zsh/` with a defined load order
+- [x] **Oh-My-Zsh Integration**: Automatic install, XDG-compliant
+- [x] **Powerlevel10k Theme**: Automatic install with custom configuration (instant prompt at the top of zshrc)
+- [x] **Nerd Font Installation**: MesloLGS NF on macOS/Linux
 - [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting
-- [x] **Cross-platform Aliases**: Aliases comunes y específicos por plataforma
-- [x] **XDG-Compliant P10k Config**: Configuración en `~/.config/powerlevel10k/p10k.zsh`
-- [x] **Advanced Autocompletion**: Sistema de completado con menús y colores
-- [x] **FZF Integration**: Búsqueda fuzzy con Ctrl+R, Ctrl+T, Alt+C
+- [x] **Cross-platform Aliases**: Common and platform-specific aliases
+- [x] **XDG-Compliant P10k Config**: `~/.config/p10k.zsh`, plus a git fallback segment for repos with `extensions.relativeWorktrees`
+- [x] **Advanced Autocompletion**: Menu completion with colors, single `compinit` (Oh My Zsh)
+- [x] **FZF Integration**: Fuzzy search with Ctrl+R, Ctrl+T, Alt+C (`fzf --zsh`)
 - [x] **Modern Tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta
+- [x] **Fast Startup**: ~0.15s (cached completions, no subprocesses at startup)
 
 ### Package Management
-- [x] **Homebrew Integration**: Instalación automática y gestión de paquetes
-- [x] **Cross-platform Brewfile**: Soporte para macOS y Linux
-- [x] **Package Cleanup**: Eliminación de paquetes deprecados y erróneos
-- [x] **Cask Applications**: Instalación de aplicaciones GUI (personal/corporativo)
+- [x] **Homebrew Integration**: Automatic install and package management
+- [x] **Cross-platform Brewfile**: macOS and Linux
+- [x] **Package Cleanup**: Deprecated and broken packages removed
+- [x] **Cask Applications**: GUI apps (personal/corporate)
 
-## 🚧 Próximas Funcionalidades (Prioridad Alta)
+### Secrets Management
+- [x] **`secrets` CLI**: Bitwarden (source of truth) → macOS Keychain cache → direnv `use keychain_env`. See [docs/secrets.md](docs/secrets.md)
+- [x] **Keychain helpers**: `keychain-get` / `keychain-set`
+- [x] **1Password removed** (deprecated)
+
+### Node.js Environment
+- [x] **fnm**: Replaces nvm; auto-switches on `cd` via `.nvmrc` / `.node-version`
+
+## 🚧 Next (High Priority)
 
 ### 1. Environment Detection & Configuration
 - [ ] **Corporate vs Personal Detection**
-  - Prompt interactivo durante inicialización
-  - Configuraciones específicas por entorno
-  - Variables de proxy para entornos corporativos
-  - Emails diferenciados
+  - Interactive prompt during init
+  - Per-environment configuration
+  - Proxy variables for corporate environments
+  - Separate emails
 
 ### 2. Secrets Management
-- [ ] **Bitwarden CLI / macOS Keychain Integration** (1Password deprecated)
-  - Configurar aliases y funciones útiles
-  - Scripts para gestión de secrets
-  - Integración con SSH keys
+- [ ] **Linux support for `keychain_env`** (`secret-tool` or `bw` directly)
+- [ ] **Migrate remaining project `.envrc` files** to `use keychain_env`
+- [ ] **SSH keys** integration
 
 ### 3. Advanced Package Management
 - [ ] **APT Integration (Linux)**
-  - Lista de paquetes esenciales
-  - Actualización automática de repositorios
+  - Essential package list
+  - Automatic repository updates
   - Snap packages support
 
 ### 4. Development Environment
@@ -57,24 +65,23 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   - pyenv integration
   - pipx installation and configuration
   - Virtual environment management
-  
+
 - [ ] **Node.js Environment**
-  - nvm/fnm integration
-  - Global npm packages
+  - Global npm packages list
   - Yarn configuration
 
 ### 5. SSH Configuration
 - [ ] **SSH Config Template**
-  - Template para ~/.ssh/config (XDG: ~/.config/ssh/config)
+  - Template for ~/.ssh/config (XDG: ~/.config/ssh/config)
   - Host-specific configurations
   - Jump host configurations
-  
+
 - [ ] **SSH Key Management**
   - Automatic SSH key generation
   - SSH agent integration (macOS Keychain)
   - Platform-specific key algorithms
 
-## 🔮 Funcionalidades Futuras (Prioridad Media)
+## 🔮 Future (Medium Priority)
 
 ### Editor Configuration
 - [ ] **Vim/Neovim Config**
@@ -89,9 +96,8 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 
 ### Terminal & Tools
 - [ ] **Terminal Emulator Config**
-  - Alacritty configuration
+  - Ghostty / Alacritty configuration
   - iTerm2 preferences (macOS)
-  - Windows Terminal settings (if needed)
 
 - [ ] **Additional CLI Tools**
   - lazygit, bottom, broot, dust, glow
@@ -108,11 +114,11 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   - GNOME/KDE settings
   - Desktop environment specific configs
 
-## 🌟 Funcionalidades Avanzadas (Prioridad Baja)
+## 🌟 Advanced (Low Priority)
 
 ### Automation & Scripts
 - [ ] **Dotfiles Maintenance**
-  - Update scripts for packages
+  - Update scripts for packages (Oh My Zsh, Powerlevel10k, plugins)
   - Health check commands
   - Backup and restore functionality
 
@@ -137,43 +143,43 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 ## 📋 Implementation Guidelines
 
 ### Branch Strategy
-- Crear branch feature por cada funcionalidad mayor
-- Mergear a main cuando esté completamente testado
-- Tags para versiones estables
+- One feature branch per major feature
+- Merge to main once fully tested
+- Tags for stable versions
 
 ### Testing Strategy
-- Probar en usuario `testing@localhost` antes de mergear
-- Verificar tanto en macOS como Linux cuando sea posible
-- Documentar casos edge y soluciones
+- Test as user `testing@localhost` before merging
+- Verify on both macOS and Linux when possible
+- Document edge cases and solutions
 
 ### Documentation
-- Actualizar CLAUDE.md con nuevos comandos/funcionalidades
-- Mantener README.md actualizado
-- Comentar templates complejos
+- Update CLAUDE.md with new commands/features
+- Keep README.md up to date
+- Comment complex templates
 
-## 🎯 Hitos Principales
+## 🎯 Milestones
 
-### Milestone 1: Core Shell Experience (COMPLETADO ✅)
+### Milestone 1: Core Shell Experience (DONE ✅)
 - ✅ One-liner installation
 - ✅ Advanced shell configuration
 - ✅ Modern tools integration
 - ✅ Package management
 
-### Milestone 2: Environment Management (ACTUAL)
+### Milestone 2: Environment Management (CURRENT)
 - Corporate/Personal detection
-- Bitwarden / Keychain integration
+- ✅ Bitwarden / Keychain integration (macOS)
 - SSH configuration
 
 ### Milestone 3: Development Ready
-- Python + Node.js environments
+- Python + Node.js environments (✅ Node via fnm)
 - Editor configurations
 - Advanced development tools
 
 ### Milestone 4: Production Ready
-- Todas las funcionalidades core implementadas
-- Documentación completa
-- Scripts de mantenimiento
+- All core features implemented
+- Complete documentation
+- Maintenance scripts
 
 ---
 
-*Este roadmap es un documento vivo que se actualizará según las necesidades y prioridades.*
+*This roadmap is a living document, updated as needs and priorities change.*
