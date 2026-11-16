@@ -1,0 +1,13 @@
+# direnv stdlib extensions (managed by chezmoi)
+
+# use keychain_env <name>
+# Load `export ...` lines cached in the macOS Keychain by `secrets sync <name>`
+# (source of truth: Bitwarden Secure Note "envrc:<name>").
+use_keychain_env() {
+    local name=$1 data
+    if data=$(secrets get "$name" 2>/dev/null); then
+        eval "$data"
+    else
+        log_error "keychain_env: no Keychain cache for envrc:$name - run: secrets sync $name"
+    fi
+}
