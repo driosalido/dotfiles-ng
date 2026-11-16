@@ -127,12 +127,22 @@ format = '[󰊭 $project]($style) '
 style = "fg:32"
 
 # gcloud has no per-project style, so flag prod projects with a separate marker.
-# Reads the active config file directly (no gcloud call, ~ms).
+# Reads the active config file directly (no gcloud call, ~ms). Prod = name contains
+# prod/prd (not nonprod), or matches a shell glob listed (one per line) in the
+# unmanaged ~/.config/starship/prod-projects.local.
 [custom.gcloud_prod]
 when = """
 c=${CLOUDSDK_CONFIG:-$HOME/.config/gcloud}
 n=${CLOUDSDK_ACTIVE_CONFIG_NAME:-$(cat "$c/active_config" 2>/dev/null)}
 p=${CLOUDSDK_CORE_PROJECT:-$(sed -n 's/^project *= *//p' "$c/configurations/config_${n:-default}" 2>/dev/null)}
+[ -n "$p" ] || exit 1
+l="$HOME/.config/starship/prod-projects.local"
+if [ -r "$l" ]; then
+  while IFS= read -r g; do
+    case $g in ''|'#'*) continue ;; esac
+    case $p in $g) exit 0 ;; esac
+  done < "$l"
+fi
 case $p in *nonprod*) exit 1 ;; *prod*|*prd*) exit 0 ;; *) exit 1 ;; esac
 """
 shell = ["sh"]
