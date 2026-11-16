@@ -31,7 +31,7 @@ alias h='history'
 alias c='clear'
 alias reload='source ~/.zshrc'
 
-# Git aliases: provided by the Oh My Zsh git plugin (gst, gc, gp, gl, gco, ...)
+# Git aliases live in ~/.config/git/config ([alias]: st, co, br, ci, cleanup, ...)
 
 # System information
 alias df='df -h'
@@ -63,7 +63,38 @@ alias mv='mv -i'
 # Modern replacements (if available)
 command -v bat >/dev/null && alias cat='bat'
 if command -v eza >/dev/null; then
-    alias ls='eza'
+    # ls -> eza (coloured columns), translating ls sort flags that eza spells
+    # differently: -t (mtime, newest first; -tc ctime, -tu atime), -S (size, largest
+    # first), -r (reverse).
+    # eza's own -t/-S take other meanings, so they're rewritten here.
+    # Real ls: `command ls`.
+    unalias ls 2>/dev/null
+    function ls {   # `function` form: immune to the ls alias defined above
+        local -a args; local a f sort= rev=0 end=0
+        for a in "$@"; do
+            if (( ! end )) && [[ $a == -- ]]; then end=1; args+=($a)
+            elif (( ! end )) && [[ $a == -[^-]* ]]; then
+                f=${a#-}
+                [[ $f == *t* ]] && sort=modified
+                [[ $f == *t* && $f == *c* ]] && sort=changed    # ls -tc: ctime
+                [[ $f == *t* && $f == *u* ]] && sort=accessed   # ls -tu: atime
+                [[ $f == *S* ]] && sort=size
+                [[ $f == *r* ]] && rev=1
+                # Drop flags eza reads differently: -h (header; sizes are already
+                # human-readable), -G (grid; macOS ls colour flag), -c/-u (handled above).
+                f=${f//[tSrhGcu]}
+                [[ -n $f ]] && args+=(-$f)
+            else args+=($a); fi
+        done
+        # ls -t/-S show newest/largest first; eza sorts ascending, so invert.
+        if [[ -n $sort ]]; then
+            args=(--sort=$sort $args)
+            (( rev )) || args=(-r $args)
+        elif (( rev )); then
+            args=(-r $args)
+        fi
+        eza "${args[@]}"
+    }
     alias ll='eza -l --git'
     alias la='eza -la --git'
     alias lt='eza --tree --level=2'

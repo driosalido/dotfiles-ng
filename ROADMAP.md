@@ -15,16 +15,15 @@ Planned features for this chezmoi-based dotfiles setup.
 ### Shell Configuration
 - [x] **Basic Shell Config**: zsh only (bash removed)
 - [x] **Modular Zsh Configuration**: Modules in `~/.config/zsh/` with a defined load order
-- [x] **Oh-My-Zsh Integration**: Automatic install, XDG-compliant
-- [x] **Powerlevel10k Theme**: Automatic install with custom configuration (instant prompt at the top of zshrc)
+- [x] **Framework-free zsh**: Oh My Zsh + Powerlevel10k replaced by plain zsh + Starship (transient prompt, terminal title)
 - [x] **Nerd Font Installation**: MesloLGS NF on macOS/Linux
-- [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting
+- [x] **Shell Plugins**: zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab (Homebrew/dnf)
 - [x] **Cross-platform Aliases**: Common and platform-specific aliases
-- [x] **XDG-Compliant P10k Config**: `~/.config/p10k.zsh`, plus a git fallback segment for repos with `extensions.relativeWorktrees`
-- [x] **Advanced Autocompletion**: Menu completion with colors, single `compinit` (Oh My Zsh)
+- [x] **Starship Config**: `~/.config/starship.toml` + unmanaged `contexts.local.toml` for machine-local kube rules
+- [x] **Advanced Autocompletion**: fzf-tab menu, single `compinit` with automatic dump rebuild
 - [x] **FZF Integration**: Fuzzy search with Ctrl+R, Ctrl+T, Alt+C (`fzf --zsh`)
 - [x] **Modern Tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta
-- [x] **Fast Startup**: ~0.15s (cached completions, no subprocesses at startup)
+- [x] **Fast Startup**: ~0.1s (cached completions and Starship init)
 
 ### Package Management
 - [x] **Homebrew Integration**: Automatic install and package management
@@ -118,7 +117,7 @@ Planned features for this chezmoi-based dotfiles setup.
 
 ### Automation & Scripts
 - [ ] **Dotfiles Maintenance**
-  - Update scripts for packages (Oh My Zsh, Powerlevel10k, plugins)
+  - Update scripts for packages
   - Health check commands
   - Backup and restore functionality
 

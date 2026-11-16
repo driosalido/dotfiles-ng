@@ -1,6 +1,6 @@
 # Zsh Completion System Configuration
 
-# compinit itself is run once by Oh My Zsh (frameworks/); point its dump to XDG cache.
+# compinit runs once in frameworks/core.zsh; its dump lives in the XDG cache.
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION"
 [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
 

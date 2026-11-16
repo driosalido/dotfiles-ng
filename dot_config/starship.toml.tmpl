@@ -1,0 +1,157 @@
+# Starship prompt: dir + git on the left, context on the right, prompt char on
+# its own line. Docs: https://starship.rs/config/
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+command_timeout = 500
+
+# Right-hand items go on the first line via $fill, (right_format would
+# put them next to the prompt char instead).
+format = """$os$directory$git_branch$git_commit$git_state$git_status${custom.worktree}$fill$status$cmd_duration$jobs$direnv$python$nodejs$terraform$kubernetes${custom.gcloud_prod}$gcloud$aws$time$line_break$character"""
+
+[fill]
+symbol = " "
+
+[os]
+disabled = false
+style = "fg:white"
+
+[os.symbols]
+Macos = " "
+Fedora = " "
+Linux = " "
+
+[directory]
+style = "bold fg:31"
+truncation_length = 4
+truncate_to_repo = true
+read_only = " 󰌾"
+
+[git_branch]
+format = "[$symbol$branch(:$remote_branch)]($style) "
+symbol = " "
+style = "fg:76"
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+style = "fg:178"
+
+[character]
+success_symbol = "[❯](fg:76)"
+error_symbol = "[❯](fg:196)"
+vimcmd_symbol = "[❮](fg:76)"
+
+[status]
+disabled = false
+format = "[$symbol$status]($style) "
+symbol = "✘ "
+style = "fg:160"
+
+[cmd_duration]
+min_time = 3_000
+format = "[$duration]($style) "
+style = "fg:101"
+
+[jobs]
+symbol = "⚙ "
+style = "fg:70"
+
+[direnv]
+disabled = false
+format = "[$symbol$loaded]($style) "
+symbol = "direnv "
+style = "fg:178"
+
+# Python only when a virtualenv (venv/uv) is active, not on every *.py file.
+[python]
+format = '[${symbol}(${version} )(\($virtualenv\) )]($style)'
+symbol = " "
+style = "fg:37"
+detect_extensions = []
+detect_files = []
+detect_folders = []
+
+# Node only in Node projects (stray *.js files don't count).
+[nodejs]
+format = "[$symbol($version )]($style)"
+symbol = " "
+style = "fg:70"
+detect_extensions = []
+
+[terraform]
+format = "[$symbol$workspace]($style) "
+
+# kube context and gcloud project are always shown.
+# Contexts: first matching rule wins. Prod -> bold red; long names -> cluster name.
+# Work-specific rules go in ~/.config/starship/contexts.local.toml (see below).
+# "nonprod" rules go first because Rust regex has no lookahead.
+[kubernetes]
+disabled = false
+format = '[󱃾 $context( /$namespace)]($style) '
+style = "fg:134"
+
+{{- /* Machine-local rules (work clusters, custom prod names) take precedence. Kept out of the repo. */}}
+{{- $local := joinPath .chezmoi.homeDir ".config/starship/contexts.local.toml" }}
+{{- if stat $local }}
+{{ include $local }}
+{{- end }}
+
+[[kubernetes.contexts]]   # GKE / Connect Gateway, non-prod: show the cluster name
+context_pattern = '^(gke|connectgateway)_.*_(?P<c>[^_]*nonprod[^_]*)$'
+context_alias = "$c"
+
+[[kubernetes.contexts]]   # GKE / Connect Gateway, prod
+context_pattern = '^(gke|connectgateway)_.*_(?P<c>[^_]*(prod|prd)[^_]*)$'
+context_alias = "$c"
+style = "bold fg:196"
+
+[[kubernetes.contexts]]   # GKE / Connect Gateway, other
+context_pattern = '^(gke|connectgateway)_.*_(?P<c>[^_]+)$'
+context_alias = "$c"
+
+[[kubernetes.contexts]]   # EKS ARN, prod
+context_pattern = '^arn:aws:eks:.*:cluster/(?P<c>.*(prod|prd).*)$'
+context_alias = "$c"
+style = "bold fg:196"
+
+[[kubernetes.contexts]]   # EKS ARN, other
+context_pattern = '^arn:aws:eks:.*:cluster/(?P<c>.+)$'
+context_alias = "$c"
+
+[[kubernetes.contexts]]   # any other prod-looking context
+context_pattern = '.*(prod|prd).*'
+style = "bold fg:196"
+
+[gcloud]
+format = '[󰊭 $project]($style) '
+style = "fg:32"
+
+# gcloud has no per-project style, so flag prod projects with a separate marker.
+# Reads the active config file directly (no gcloud call, ~ms).
+[custom.gcloud_prod]
+when = """
+c=${CLOUDSDK_CONFIG:-$HOME/.config/gcloud}
+n=${CLOUDSDK_ACTIVE_CONFIG_NAME:-$(cat "$c/active_config" 2>/dev/null)}
+p=${CLOUDSDK_CORE_PROJECT:-$(sed -n 's/^project *= *//p' "$c/configurations/config_${n:-default}" 2>/dev/null)}
+case $p in *nonprod*) exit 1 ;; *prod*|*prd*) exit 0 ;; *) exit 1 ;; esac
+"""
+shell = ["sh"]
+format = "[PROD ]($style)"
+style = "bold fg:196"
+
+# Linked git worktree marker.
+[custom.worktree]
+when = '[ "$(git rev-parse --path-format=absolute --git-dir --git-common-dir 2>/dev/null | uniq | wc -l)" -eq 2 ]'
+require_repo = true
+shell = ["sh"]
+format = "[\\(wt\\) ]($style)"
+style = "fg:244"
+
+[time]
+disabled = false
+format = "[$time]($style)"
+time_format = "%H:%M:%S"
+style = "fg:66"
+
+[aws]
+format = '[$symbol($profile )(\($region\) )]($style)'

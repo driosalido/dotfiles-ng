@@ -29,6 +29,11 @@ sudo dnf install -y \
     neovim tmux fzf direnv zoxide \
     wl-clipboard nodejs-npm cascadia-code-nf-fonts
 
+# Zsh prompt + plugins. starship may not be in the default repos:
+# fall back to `dnf copr enable atim/starship` or the official install script.
+sudo dnf install -y zsh-autosuggestions zsh-syntax-highlighting
+sudo dnf install -y starship || echo "⚠ starship not available via dnf; install it manually (see starship.rs)"
+
 # Build essentials
 sudo dnf install -y gcc make
 

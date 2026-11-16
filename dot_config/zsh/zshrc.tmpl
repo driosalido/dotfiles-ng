@@ -1,12 +1,6 @@
 # Modular Zsh configuration for {{ .name }}
 # Platform: {{ if .is_macos }}macOS{{ else if .is_linux }}Linux{{ else }}{{ .chezmoi.os }}{{ end }}
 
-# Powerlevel10k instant prompt. Must stay at the very top: anything that needs
-# console input (password prompts, [y/n] confirmations) must go above this block.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Define zsh config directory
 ZSH_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
@@ -32,7 +26,7 @@ load_zsh_modules "bootstrap"
 # 2. Config - Core zsh configuration
 load_zsh_modules "config"
 
-# 3. Frameworks - Oh-my-zsh and similar
+# 3. Frameworks - completion, key bindings, plugins, Starship prompt (no framework)
 load_zsh_modules "frameworks"
 
 # 4. Environment - Variables and paths
@@ -43,6 +37,9 @@ load_zsh_modules "ui"
 
 # 6. Local - Machine-specific customizations (loaded last)
 load_zsh_modules "local"
+
+# 7. Late - Must run after everything else (zsh-syntax-highlighting wraps all widgets)
+load_zsh_modules "late"
 
 # Load single local file if it exists (for backward compatibility)
 source_if_exists "$HOME/.zshrc.local"

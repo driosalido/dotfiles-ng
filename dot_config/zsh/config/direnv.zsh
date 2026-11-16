@@ -15,6 +15,5 @@ if command -v direnv &> /dev/null; then
     alias ds='direnv status'
     alias de='direnv edit'
 
-    # Optional: Show direnv status in prompt (if not using p10k segment)
-    # This is handled better by p10k if you're using it
+    # direnv status is shown by the Starship prompt
 fi

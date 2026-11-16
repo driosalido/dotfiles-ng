@@ -1,0 +1,114 @@
+# Core shell setup without a framework: compinit, key bindings, plugins from the
+# system package manager (Brewfile / Fedora dnf list), Starship prompt, transient
+# prompt and terminal title.
+
+# --- Plugin lookup: Homebrew first, then distro paths -------------------------
+_zsh_plugin() {
+  local name=$1 dir
+  # Last entry: plugins cloned by chezmoi externals where no package exists (fzf-tab on Linux).
+  for dir in ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share} /usr/share /usr/local/share \
+             ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins; do
+    [[ -r $dir/$name/$name.zsh ]] && { print -r -- $dir/$name/$name.zsh; return 0 }
+  done
+  return 1
+}
+
+# --- Completion -----------------------------------------------------------------
+typeset -gU fpath   # -g: modules are sourced from inside a function
+[[ -n $HOMEBREW_PREFIX ]] && fpath=(
+  $HOMEBREW_PREFIX/share/zsh-completions(N/)
+  $HOMEBREW_PREFIX/share/zsh/site-functions(N/)
+  $fpath
+)
+autoload -Uz compinit
+# Full check (rebuild the dump) when it's missing, older than a day, or older than
+# any fpath directory (new completions installed by brew/dnf); otherwise trust it (-C).
+# ZSH_COMPDUMP is set in config/completion.zsh.
+_rebuild=0
+if [[ ! -s $ZSH_COMPDUMP || -n ${ZSH_COMPDUMP}(#qN.mh+24) ]]; then
+  _rebuild=1
+else
+  for _d in $fpath; do [[ $_d -nt $ZSH_COMPDUMP ]] && { _rebuild=1; break }; done
+fi
+if (( _rebuild )); then
+  compinit -i -d "$ZSH_COMPDUMP"
+  { zcompile "$ZSH_COMPDUMP" } &!
+else
+  compinit -C -d "$ZSH_COMPDUMP"
+fi
+unset _rebuild _d
+
+# --- Key bindings -----------------------------------------------------------------
+bindkey -e
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+zle -N edit-command-line
+bindkey '^[[A' up-line-or-beginning-search   '^[OA' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search '^[OB' down-line-or-beginning-search
+bindkey '^[[H' beginning-of-line '^[[F' end-of-line '^[[3~' delete-char
+bindkey '^[[1;5C' forward-word '^[[1;5D' backward-word   # Ctrl+arrows
+bindkey '^[[1;3C' forward-word '^[[1;3D' backward-word   # Alt+arrows
+bindkey '^X^E' edit-command-line
+bindkey '^[[Z' reverse-menu-complete                      # Shift+Tab
+WORDCHARS=${WORDCHARS//[\/]}
+
+# --- Colored man pages ------------------------------------------------------------
+export LESS_TERMCAP_mb=$'\e[1;31m' LESS_TERMCAP_md=$'\e[1;31m' LESS_TERMCAP_me=$'\e[0m' \
+       LESS_TERMCAP_so=$'\e[01;33m' LESS_TERMCAP_se=$'\e[0m' \
+       LESS_TERMCAP_us=$'\e[1;32m' LESS_TERMCAP_ue=$'\e[0m'
+export GROFF_NO_SGR=1
+
+# --- Plugins: fzf-tab, autosuggestions (syntax highlighting loads last, late/) -----
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=green'
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+# fzf-tab: Tab completion menu in fzf. Must load after compinit and before
+# plugins that wrap widgets. fzf's own `**<Tab>` still works (it falls back to fzf-tab).
+if _p=$(_zsh_plugin fzf-tab); then
+  source $_p
+  zstyle ':completion:*' menu no                 # fzf-tab replaces the menu
+  zstyle ':completion:*:descriptions' format '[%d]'
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+  zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $realpath'
+fi
+
+_p=$(_zsh_plugin zsh-autosuggestions) && source $_p
+unset _p
+# zsh-syntax-highlighting is sourced last, from late/syntax-highlighting.zsh
+
+# --- Prompt -------------------------------------------------------------------
+if (( $+commands[starship] )); then
+  export STARSHIP_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
+  # Cache the init script; regenerate when the starship binary changes (upgrade).
+  _f="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/starship-init.zsh"
+  if [[ ! -s $_f || $commands[starship] -nt $_f ]]; then
+    mkdir -p ${_f:h} && starship init zsh --print-full-init >| $_f
+  fi
+  source $_f
+  unset _f
+
+  # Transient prompt: once a command is accepted, redraw its prompt as just ❯
+  # (coloured by the previous exit status).
+  _zsh_transient_prompt() {
+    local p=$PROMPT rp=$RPROMPT
+    # $? inside a zle widget isn't the last command's status; starship saves it.
+    local c=76; (( ${STARSHIP_CMD_STATUS:-0} )) && c=196
+    PROMPT="%F{$c}❯%f " RPROMPT=
+    zle .reset-prompt && zle -R   # -R: redraw now, before PROMPT is restored
+    PROMPT=$p RPROMPT=$rp
+  }
+  autoload -Uz add-zle-hook-widget
+  add-zle-hook-widget zle-line-finish _zsh_transient_prompt
+else
+  print -u2 "zsh: starship not installed (brew install starship) — using a basic prompt"
+  PROMPT='%F{31}%~%f %(?.%F{76}.%F{196})❯%f '
+fi
+
+# --- Terminal title: directory when idle, command while running -------------------
+_zsh_title_precmd()  { print -Pn '\e]0;%~\a' }
+_zsh_title_preexec() { print -Pn '\e]0;%~: '; print -rn -- "${1[1,60]}"; print -n '\a' }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd  _zsh_title_precmd
+add-zsh-hook preexec _zsh_title_preexec

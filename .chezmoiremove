@@ -1,0 +1,9 @@
+# Targets removed on `chezmoi apply` (left over from the Oh My Zsh + Powerlevel10k stack)
+.config/p10k.zsh
+.config/zsh/config/p10k-loader.zsh
+.config/zsh/frameworks/oh-my-zsh.zsh
+.config/zsh/frameworks/lean.zsh
+.local/share/oh-my-zsh
+.local/state/zsh/stack
+.cache/gitstatus
+.cache/p10k-*

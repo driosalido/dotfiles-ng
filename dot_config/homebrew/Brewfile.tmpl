@@ -39,6 +39,13 @@ brew "direnv"           # Directory-specific environment variables
 brew "shellcheck"       # Shell script linter
 brew "zoxide"           # Smarter cd command (autojump replacement)
 brew "fnm"              # Fast Node version manager (replaces nvm)
+
+# Zsh: prompt + plugins (no framework)
+brew "starship"                 # Cross-shell prompt
+brew "zsh-autosuggestions"      # Fish-like suggestions
+brew "zsh-syntax-highlighting"  # Command highlighting
+brew "zsh-completions"          # Extra completion definitions
+brew "fzf-tab"                  # Tab completion menu in fzf
 # Note: skim was removed as it's not available in homebrew
 # Note: autojump commented out - zoxide is the modern replacement
 
@@ -62,7 +69,7 @@ cask "google-cloud-sdk" # Google Cloud CLI (gcloud command)
 # Platform-specific tools
 {{- if .is_macos }}
 # macOS specific tools
-cask "font-meslo-lg-nerd-font"  # Powerlevel10k icons (MesloLGS Nerd Font)
+cask "font-meslo-lg-nerd-font"  # Nerd Font icons for the Starship prompt
 cask "font-fira-code-nerd-font"
 brew "mas"              # Mac App Store CLI
 brew "duti"             # Set default applications for file types

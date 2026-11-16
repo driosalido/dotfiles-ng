@@ -7,8 +7,8 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 - 🍎 **Cross-platform**: Works on macOS (Intel & Apple Silicon) and Linux
 - 🚀 **One-liner installation**: No prompts, just works with smart defaults
 - 📁 **XDG compliant**: Follows XDG Base Directory Specification
-- 🎨 **Modern shell**: Modular zsh with Oh My Zsh, Powerlevel10k, autosuggestions and syntax highlighting
-- ⚡ **Fast startup**: ~0.15s (cached completions, no subprocesses at startup)
+- 🎨 **Modern shell**: Modular zsh without a framework: Starship prompt, fzf-tab, autosuggestions, syntax highlighting
+- ⚡ **Fast startup**: ~0.1s (cached completions and Starship init, no framework)
 - 🛠 **Modern CLI tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta, direnv
 - 🟢 **Node.js via fnm**: auto-switches version on `cd` (`.nvmrc` / `.node-version`)
 - 🔧 **Package management**: Automatic Homebrew installation with curated package list
@@ -49,9 +49,10 @@ chezmoi init --apply driosalido/dotfiles-ng
 First run will:
 1. 🍺 **Install Homebrew** (if not present) for package management
 2. 📦 **Install packages** from the Brewfile: git, gh, fzf, zoxide, ripgrep, fd, bat, eza, delta, htop, neovim, tmux, direnv, fnm, bitwarden-cli, gcloud and more (on Fedora, packages come from `dnf`)
-3. 🔤 **Install MesloLGS Nerd Font** for Powerlevel10k icons and symbols
+3. 🔤 **Install MesloLGS Nerd Font** for prompt icons and symbols
 4. 🏠 **Configure shell environment**:
-   - Oh My Zsh with Powerlevel10k theme
+   - Starship prompt (two lines, transient prompt, git/kube/gcloud context)
+   - fzf-tab (Tab completion menu in fzf, with previews)
    - zsh-autosuggestions (green suggestions as you type)
    - zsh-syntax-highlighting (command coloring)
    - Advanced autocompletion with menus and colors
@@ -63,8 +64,9 @@ First run will:
 
 1. **Restart your terminal** for all changes to take effect
 2. **Configure your terminal font** to "MesloLGS NF" for proper icons
-3. **Run `p10k configure`** if you want to customize the prompt, then save it with
-   `chezmoi re-add ~/.config/p10k.zsh`
+3. **Customize the prompt** in `~/.config/starship.toml` (managed as `dot_config/starship.toml.tmpl`).
+   Machine-local kube context rules (e.g. work clusters) go in the unmanaged
+   `~/.config/starship/contexts.local.toml`, included on `chezmoi apply`
 4. **Secrets** (optional): `bw login` and `secrets sync` (see [Secrets](#secrets))
 
 ## Customization
@@ -91,17 +93,17 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 
 ## Shell Layout
 
-`~/.zshrc` only sources `~/.config/zsh/zshrc`, which enables the Powerlevel10k instant
-prompt and loads the modules in this order:
+`~/.zshrc` only sources `~/.config/zsh/zshrc`, which loads the modules in this order:
 
 | Directory | Contents |
 |---|---|
 | `bootstrap/` | Homebrew, XDG base dirs |
-| `config/` | completion styles, history, options, direnv, p10k config loader |
-| `frameworks/` | Oh My Zsh (runs `compinit` once) |
+| `config/` | completion styles, history, options, direnv |
+| `frameworks/` | `core.zsh`: `compinit`, key bindings, fzf-tab, autosuggestions, Starship, terminal title |
 | `env/` | exports and PATH (deduplicated), Node via fnm, LM Studio |
 | `ui/` | aliases, functions, fzf, zoxide, gcloud, kubectl |
 | `local/` | machine-specific overrides (not shared) |
+| `late/` | zsh-syntax-highlighting (must load after every widget) |
 
 Installers that append lines to `~/.zshrc` should have them moved into a module.
 
@@ -112,10 +114,12 @@ Installers that append lines to `~/.zshrc` should have them moved into a module.
 - **Fuzzy search**: `Ctrl+R` history, `Ctrl+T` files, `Alt+C` directories
 - **Smart navigation**: `z <directory>` jumps to frequently used directories
 - **Better commands**: `ls`/`ll`/`la`/`lt` → `eza`, `cat` → `bat`, `kubectl`/`k` → `kubecolor`
-- **Git aliases**: from the Oh My Zsh git plugin (`gst`, `gc`, `gp`, `gl`, `gco`…)
+- **Git aliases**: in the git config (`git st`, `git co`, `git cleanup`…)
 - **Safe deletes**: `rm` moves files to the Trash (`rm -rf` works); real removal: `command rm`
-- **Prompt**: shows the git branch, including repos with relative worktrees
-  (`(wt)` marks a linked worktree)
+- **Prompt**: git branch/status (also in repos with relative worktrees; `(wt)` marks a
+  linked worktree), kube context and gcloud project (prod in red), transient prompt
+- **Tab completion**: fzf menu with previews (fzf-tab); `**<Tab>` still does fzf file search
+- **`ls`** → eza, translating `ls` sort flags (`-t`, `-S`, `-r`, `-tc`, `-tu`); real ls: `command ls`
 - **Node.js**: `fnm install <ver>`, `fnm default <ver>`; switches automatically on `cd`
 
 ### Daily Workflow
@@ -136,9 +140,8 @@ chezmoi diff
 chezmoi apply
 ```
 
-Oh My Zsh, Powerlevel10k and the zsh plugins are git clones outside chezmoi. Update them with
-`omz update` and `git -C $ZSH/custom/themes/powerlevel10k pull` (same for each plugin in
-`$ZSH/custom/plugins`).
+The zsh plugins and Starship come from Homebrew (`brew upgrade`) or dnf on Fedora;
+fzf-tab on Linux is a chezmoi external (`chezmoi apply -R` to refresh).
 
 ## Secrets
 
@@ -164,9 +167,8 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 ### Common Issues
 
 **Font icons not showing correctly:**
-1. Set your terminal font to "MesloLGS NF"
+1. Set your terminal font to a Nerd Font ("MesloLGS Nerd Font" / "MesloLGS NF")
 2. Restart your terminal after font installation
-3. Run `p10k configure` if icons still don't appear
 
 **Autosuggestions not visible:**
 - They appear in green as you type
@@ -177,12 +179,13 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 - Make sure you've restarted your terminal after installation
 - The interface should show a searchable history when you press Ctrl+R
 
-**Prompt doesn't show the git branch:**
-- Repos with `extensions.relativeWorktrees` (from `worktree.useRelativePaths=true`) can't be
-  read by gitstatusd; the `git_fallback` segment in `~/.config/p10k.zsh` covers them
+**Completion missing for a newly installed tool:**
+- The completion dump rebuilds automatically when an `fpath` directory changes; to force it:
+  `rm ~/.cache/zsh/zcompdump-*` and open a new shell
 
 **Slow shell startup:**
-- Measure with `for i in 1 2 3; do /usr/bin/time zsh -lic exit; done` (expected ~0.15s)
+- Measure with `for i in 1 2 3; do /usr/bin/time zsh -lic exit; done` (expected ~0.1s)
+- Prompt modules: `starship timings`
 
 ## What's Next
 

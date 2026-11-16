@@ -68,3 +68,4 @@ if [[ $OSTYPE == darwin* ]]; then
         security add-generic-password -U -a "$USER" -s "$1" -w
     }
 fi
+
