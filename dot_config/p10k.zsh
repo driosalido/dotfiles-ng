@@ -35,6 +35,7 @@
     os_icon                 # os identifier
     dir                     # current directory
     vcs                     # git status
+    git_fallback            # branch for repos gitstatus can't read (see prompt_git_fallback)
     # =========================[ Line #2 ]=========================
     newline                 # \n
     prompt_char             # prompt symbol
@@ -1654,6 +1655,21 @@
   # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS. It displays an icon and orange text greeting the user.
   #
   # Type `p10k help segment` for documentation and a more sophisticated example.
+  # Fallback git segment. gitstatusd (libgit2) rejects repos with
+  # extensions.relativeWorktrees, which git >= 2.48 adds when
+  # worktree.useRelativePaths=true (set in ~/.gitconfig). For those repos only,
+  # show the branch via the git CLI, plus a marker when in a linked worktree.
+  function prompt_git_fallback() {
+    [[ "$(command git config --local --get extensions.relativeworktrees 2>/dev/null)" == true ]] || return
+    local ref dirs wt= dirty=
+    ref=$(command git symbolic-ref --short -q HEAD 2>/dev/null) ||
+      ref="@$(command git rev-parse --short HEAD 2>/dev/null)" || return
+    dirs=("${(@f)$(command git rev-parse --absolute-git-dir --git-common-dir 2>/dev/null)}")
+    [[ ${dirs[1]:A} != ${dirs[2]:A} ]] && wt=' %244F(wt)'
+    command git diff-index --quiet HEAD -- 2>/dev/null || dirty=' %178F!'
+    p10k segment -f 76 -t "${ref//\%/%%}${wt}${dirty}"
+  }
+
   function prompt_example() {
     p10k segment -f 208 -i '⭐' -t 'hello, %n'
   }

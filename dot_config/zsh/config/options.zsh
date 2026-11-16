@@ -14,7 +14,6 @@ setopt NUMERIC_GLOB_SORT    # Sort globs numerically when possible
 
 # Correction
 setopt CORRECT              # Auto correct mistakes
-setopt CORRECT_ALL          # Auto correct all arguments in line
 
 # Miscellaneous
 setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells

@@ -1,37 +1,8 @@
 # FZF Configuration - Loaded after frameworks to ensure key bindings work
 
+# Official shell integration (fzf >= 0.48): Ctrl-R history, Ctrl-T files, Alt-C cd, ** completion
 if command -v fzf &> /dev/null; then
-    # Find fzf shell-integration directory
-    {{- if .is_macos }}
-    if [[ -d "/opt/homebrew/opt/fzf" ]]; then
-        FZF_BASE="/opt/homebrew/opt/fzf"
-    elif [[ -d "/usr/local/opt/fzf" ]]; then
-        FZF_BASE="/usr/local/opt/fzf"
-    fi
-    {{- else if .is_linux }}
-    # Fedora/RHEL: dnf installs shell integration at /usr/share/fzf/shell/
-    # Debian/Ubuntu: /usr/share/doc/fzf/examples/
-    if [[ -d "/usr/share/fzf/shell" ]]; then
-        FZF_BASE="/usr/share/fzf"
-    elif [[ -d "/usr/share/doc/fzf/examples" ]]; then
-        FZF_BASE="/usr/share/doc/fzf/examples"
-    elif [[ -d "/home/linuxbrew/.linuxbrew/opt/fzf" ]]; then
-        FZF_BASE="/home/linuxbrew/.linuxbrew/opt/fzf"
-    fi
-    {{- end }}
-
-    # Source key bindings and completion (load after oh-my-zsh so they're not overridden)
-    [[ -f "$FZF_BASE/shell/key-bindings.zsh" ]] && source "$FZF_BASE/shell/key-bindings.zsh"
-    [[ -f "$FZF_BASE/shell/completion.zsh" ]]   && source "$FZF_BASE/shell/completion.zsh"
-    # Debian layout (no shell/ subdir)
-    [[ -f "$FZF_BASE/key-bindings.zsh" ]] && source "$FZF_BASE/key-bindings.zsh"
-    [[ -f "$FZF_BASE/completion.zsh" ]]   && source "$FZF_BASE/completion.zsh"
-
-    if [[ -n "$FZF_BASE" ]]; then
-        bindkey '^R' fzf-history-widget
-        bindkey '^T' fzf-file-widget
-        bindkey '\ec' fzf-cd-widget
-    fi
+    source <(fzf --zsh)
 fi
 
 # Platform-aware clipboard command

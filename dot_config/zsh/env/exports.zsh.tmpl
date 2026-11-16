@@ -1,0 +1,37 @@
+# Environment variables and PATH
+# (XDG_* base dirs are set in bootstrap/xdg.zsh)
+
+# Keep PATH entries unique (first occurrence wins)
+typeset -gU path PATH
+
+export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+path=("$XDG_BIN_HOME" $path)
+
+# Editor: nvim > vim
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR=nvim
+else
+    export EDITOR=vim
+fi
+export VISUAL="$EDITOR" GIT_EDITOR="$EDITOR"
+
+# Pager: -F quit if one screen, -R colors, -X keep screen, -i smart case
+export PAGER=less
+export LESS='-FRXi'
+
+# Language
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+{{- if .is_macos }}
+
+# Java (only if a JDK is installed; avoids java_home's error output)
+if [[ -z "$JAVA_HOME" ]] && /usr/libexec/java_home >/dev/null 2>&1; then
+    export JAVA_HOME="$(/usr/libexec/java_home)"
+fi
+{{- end }}
+
+# Telemetry opt-outs
+export HOMEBREW_NO_ANALYTICS=1
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export NEXT_TELEMETRY_DISABLED=1

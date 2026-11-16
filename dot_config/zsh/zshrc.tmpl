@@ -1,6 +1,12 @@
 # Modular Zsh configuration for {{ .name }}
 # Platform: {{ if .is_macos }}macOS{{ else if .is_linux }}Linux{{ else }}{{ .chezmoi.os }}{{ end }}
 
+# Powerlevel10k instant prompt. Must stay at the very top: anything that needs
+# console input (password prompts, [y/n] confirmations) must go above this block.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Define zsh config directory
 ZSH_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 

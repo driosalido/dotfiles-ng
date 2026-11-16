@@ -1,8 +1,10 @@
 # Homebrew Bootstrap Configuration
 
-# Ensure Homebrew is in PATH
+# Ensure Homebrew is in PATH (skipped if ~/.zprofile already ran brew shellenv)
 {{- if .is_macos }}
-if [[ -f "/opt/homebrew/bin/brew" ]]; then
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    :
+elif [[ -f "/opt/homebrew/bin/brew" ]]; then
     # Apple Silicon Mac
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -f "/usr/local/bin/brew" ]]; then
@@ -10,7 +12,9 @@ elif [[ -f "/usr/local/bin/brew" ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 {{- else if .is_linux }}
-if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    :
+elif [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
     # Standard Linux installation
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 elif [[ -f "$HOME/.linuxbrew/bin/brew" ]]; then

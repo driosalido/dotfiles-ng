@@ -68,7 +68,7 @@ First run will:
 The installation uses smart defaults:
 - **Email**: Auto-detected from your git config
 - **Environment**: Defaults to personal computer
-- **Secrets**: Enabled by default (1Password, etc.)
+- **Secrets**: Enabled by default (Bitwarden CLI + macOS Keychain; 1Password is deprecated)
 
 To customize, set environment variables before installation:
 ```bash
@@ -145,7 +145,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply driosalido/dotfiles-ng
 
 This configuration provides a solid foundation. Planned features include:
 - Corporate vs Personal environment detection
-- 1Password CLI integration for secrets management  
+- Bitwarden CLI / macOS Keychain integration for secrets management
 - SSH configuration with XDG compliance
 - Development environment setup (Python, Node.js)
 - Additional modern CLI tools (lazygit, bottom, etc.)

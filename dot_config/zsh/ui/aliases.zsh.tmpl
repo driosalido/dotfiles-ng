@@ -25,43 +25,59 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias ~='cd ~'
-alias /='cd /'
 
 # Shortcuts
 alias h='history'
 alias c='clear'
 alias reload='source ~/.zshrc'
 
-# Git aliases (complement .gitconfig)
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git log --oneline'
-alias gd='git diff'
-alias gb='git branch'
-alias gco='git checkout'
-alias gst='git stash'
-alias gsp='git stash pop'
+# Git aliases: provided by the Oh My Zsh git plugin (gst, gc, gp, gl, gco, ...)
 
 # System information
 alias df='df -h'
 alias du='du -h'
-alias free='free -h' 2>/dev/null || alias free='vm_stat'
-alias ps='ps aux'
+command -v free >/dev/null && alias free='free -h'
 
 # Safe operations
+{{- if .is_macos }}
+# rm -> macOS Trash (recoverable). rm flags (-r -f -i -v) are ignored; with -f,
+# missing files are skipped silently. Real rm: `command rm` or `\rm`.
+rm() {
+    local -a files; local a force=0 end=0
+    for a in "$@"; do
+        if (( ! end )) && [[ $a == -- ]]; then end=1
+        elif (( ! end )) && [[ $a == -?* ]]; then [[ $a == *f* ]] && force=1
+        elif (( force )) && [[ ! -e $a && ! -L $a ]]; then :
+        elif [[ $a == -* ]]; then files+=("./$a")   # trash has no `--`
+        else files+=("$a"); fi
+    done
+    (( ${#files} )) || { (( force )) && return 0; print -u2 "usage: rm file..."; return 1; }
+    /usr/bin/trash "${files[@]}"
+}
+{{- else }}
 alias rm='rm -i'
+{{- end }}
 alias cp='cp -i'
 alias mv='mv -i'
 
 # Modern replacements (if available)
 command -v bat >/dev/null && alias cat='bat'
-command -v exa >/dev/null && alias ls='exa' && alias ll='exa -l' && alias la='exa -la'
-command -v fd >/dev/null && alias find='fd'
+if command -v eza >/dev/null; then
+    alias ls='eza'
+    alias ll='eza -l --git'
+    alias la='eza -la --git'
+    alias lt='eza --tree --level=2'
+fi
 
 # Kubernetes aliases
-command -v kubectl >/dev/null && alias k='kubectl'
+if command -v kubecolor >/dev/null; then
+    # kubecolor: colorized kubectl output (including -o yaml/json)
+    alias kubectl='kubecolor'
+    alias k='kubecolor'
+    compdef kubecolor=kubectl
+elif command -v kubectl >/dev/null; then
+    alias k='kubectl'
+fi
 
 # Editor shortcuts
 if command -v nvim >/dev/null; then

@@ -41,7 +41,7 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   - Emails diferenciados
 
 ### 2. Secrets Management
-- [ ] **1Password CLI Integration**
+- [ ] **Bitwarden CLI / macOS Keychain Integration** (1Password deprecated)
   - Configurar aliases y funciones útiles
   - Scripts para gestión de secrets
   - Integración con SSH keys
@@ -71,7 +71,7 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
   
 - [ ] **SSH Key Management**
   - Automatic SSH key generation
-  - 1Password SSH agent integration
+  - SSH agent integration (macOS Keychain)
   - Platform-specific key algorithms
 
 ## 🔮 Funcionalidades Futuras (Prioridad Media)
@@ -161,7 +161,7 @@ Este documento contiene la lista de funcionalidades planificadas para implementa
 
 ### Milestone 2: Environment Management (ACTUAL)
 - Corporate/Personal detection
-- 1Password integration
+- Bitwarden / Keychain integration
 - SSH configuration
 
 ### Milestone 3: Development Ready

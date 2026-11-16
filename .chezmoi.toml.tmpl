@@ -13,7 +13,6 @@
     is_linux = {{ if eq .chezmoi.os "linux" }}true{{ else }}false{{ end }}
     
     # Tool detection
-    has_1password = {{ if lookPath "op" }}true{{ else }}false{{ end }}
     has_brew = {{ if lookPath "brew" }}true{{ else }}false{{ end }}
     has_delta = {{ if lookPath "delta" }}true{{ else }}false{{ end }}
     has_code = {{ if lookPath "code" }}true{{ else }}false{{ end }}

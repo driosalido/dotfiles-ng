@@ -24,3 +24,6 @@ Thumbs.db
 # Backup files
 *.bak
 *.backupbin/
+
+# ~/.gitignore_global ignores ENV/ (case-insensitive on macOS) - keep zsh env modules
+!dot_config/zsh/env/

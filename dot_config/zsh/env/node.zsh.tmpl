@@ -1,0 +1,12 @@
+# Node (fnm) and LM Studio CLI
+{{- if .is_macos }}
+
+# LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
+{{- end }}
+
+# fnm: Fast Node Manager. Auto-switches on cd using .nvmrc / .node-version
+# (searching parent dirs). Default version: `fnm default <ver>`.
+if command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env --shell zsh --use-on-cd --version-file-strategy=recursive)"
+fi

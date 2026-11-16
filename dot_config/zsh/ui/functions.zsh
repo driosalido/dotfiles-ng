@@ -34,12 +34,12 @@ google() {
 
 # Find process by name
 psgrep() {
-    ps aux | grep -v grep | grep "$@" -i --color=auto
+    pgrep -fil "$@"
 }
 
 # Get IP address
 myip() {
-    curl -s http://checkip.amazonaws.com
+    curl -fsS https://checkip.amazonaws.com
 }
 
 # Create backup of file
@@ -48,11 +48,23 @@ backup() {
 }
 
 # Show PATH in readable format
-path() {
-    echo "$PATH" | tr ':' '\n' | nl
+showpath() {
+    print -l $path | nl
 }
 
 # Show directory sizes
 dirsize() {
     du -sh "${1:-.}"/* | sort -hr
 }
+
+# Secrets from the macOS Keychain (replacement for 1Password CLI)
+#   keychain-set GITHUB_TOKEN        # prompts for the value
+#   export GITHUB_TOKEN=$(keychain-get GITHUB_TOKEN)   # e.g. in .envrc
+if [[ $OSTYPE == darwin* ]]; then
+    keychain-get() {
+        security find-generic-password -a "$USER" -s "$1" -w
+    }
+    keychain-set() {
+        security add-generic-password -U -a "$USER" -s "$1" -w
+    }
+fi

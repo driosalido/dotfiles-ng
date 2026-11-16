@@ -38,6 +38,7 @@ brew "peco"             # Simplistic interactive filtering tool
 brew "direnv"           # Directory-specific environment variables
 brew "shellcheck"       # Shell script linter
 brew "zoxide"           # Smarter cd command (autojump replacement)
+brew "fnm"              # Fast Node version manager (replaces nvm)
 # Note: skim was removed as it's not available in homebrew
 # Note: autojump commented out - zoxide is the modern replacement
 
@@ -50,8 +51,8 @@ brew "imagemagick"      # Image manipulation
 
 {{- if .use_secrets }}
 # Security tools
-# 1Password CLI - using cask as the formula was deprecated
-cask "1password-cli"    # 1Password CLI (op command)
+# Bitwarden CLI (bw). Local secrets: macOS Keychain (keychain-get/-set)
+brew "bitwarden-cli"
 {{- end }}
 
 # Cloud tools
@@ -62,7 +63,6 @@ cask "google-cloud-sdk" # Google Cloud CLI (gcloud command)
 {{- if .is_macos }}
 # macOS specific tools
 brew "mas"              # Mac App Store CLI
-brew "trash"            # Move files to trash instead of rm
 brew "duti"             # Set default applications for file types
 
 # Casks (GUI applications)

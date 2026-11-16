@@ -13,12 +13,12 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
     git
     zsh-autosuggestions
-    zsh-syntax-highlighting
     colored-man-pages
     {{- if .is_macos }}
     brew
     macos
     {{- end }}
+    zsh-syntax-highlighting  # must be last
 )
 
 # Load Oh My Zsh

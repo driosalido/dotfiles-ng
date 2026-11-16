@@ -5,8 +5,8 @@ HISTFILE="$XDG_STATE_HOME/zsh/history"
 mkdir -p "$(dirname "$HISTFILE")"
 
 # History settings
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 
 # History options
 setopt APPEND_HISTORY         # Append to history file
@@ -16,4 +16,5 @@ setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicates
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
 setopt HIST_IGNORE_SPACE      # Don't record commands starting with space
 setopt HIST_VERIFY            # Show command with history expansion to user before running
-setopt INC_APPEND_HISTORY     # Add commands immediately, not just when shell exits
+setopt EXTENDED_HISTORY       # Save timestamp and duration
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicates first when trimming
