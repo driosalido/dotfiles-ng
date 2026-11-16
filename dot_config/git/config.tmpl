@@ -22,6 +22,22 @@
     conflictStyle = zdiff3
 {{- end }}
 
+[diff]
+    tool = difftastic
+
+[difftool]
+    prompt = false
+
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
+
+[pager]
+    difftool = true
+
+[absorb]
+    # `git absorb` with nothing staged: consider all tracked changes
+    autoStageIfNothingStaged = true
+
 [init]
     defaultBranch = main
 
@@ -47,5 +63,9 @@
     unstage = reset HEAD --
     last = log -1 HEAD
     visual = !gitk
+    # Structural (syntax-aware) diffs with difftastic
+    dft = difftool --tool=difftastic
+    dlog = -c diff.external=difft log -p --ext-diff
+    dshow = -c diff.external=difft show --ext-diff
     # Delete local branches whose upstream is gone
     cleanup = "!git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D"

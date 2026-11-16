@@ -10,7 +10,7 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 - 🎨 **Modern shell**: Modular zsh without a framework: Starship prompt, fzf-tab, autosuggestions, syntax highlighting
 - ⚡ **Fast startup**: ~0.1s (cached completions and Starship init, no framework)
 - 🛠 **Modern CLI tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta, direnv, atuin
-- 🐈 **One theme everywhere**: Catppuccin Mocha in Ghostty, Starship, fzf, bat, delta, eza, k9s, lazygit and atuin
+- 🐈 **One theme everywhere**: Catppuccin Mocha in Ghostty, Orca, Starship, fzf, bat, delta, eza, k9s, lazygit, atuin and yazi
 - 👻 **Ghostty config**: Nerd Font, splits, drop-down quick terminal (`Ctrl+\``)
 - 🟢 **Node.js via fnm**: auto-switches version on `cd` (`.nvmrc` / `.node-version`)
 - 🔧 **Package management**: Automatic Homebrew installation with curated package list
@@ -124,6 +124,11 @@ Installers that append lines to `~/.zshrc` should have them moved into a module.
 - **Tab completion**: fzf menu with previews (fzf-tab); `**<Tab>` still does fzf file search
 - **`ls`** → eza, translating `ls` sort flags (`-t`, `-S`, `-r`, `-tc`, `-tu`); real ls: `command ls`
 - **Node.js**: `fnm install <ver>`, `fnm default <ver>`; switches automatically on `cd`
+- **Files**: `y` opens yazi (previews; `cd`s to where you quit); `ll`/`la`/`lt` with icons
+- **Docs**: `man` and `help <cmd>` rendered by bat; `tldr <cmd>` for quick examples
+- **Git**: `git dft` / `git dlog` (difftastic, syntax-aware diffs), `git absorb` (auto fixup commits)
+- **Orca terminal**: import `~/.config/orca/catppuccin-mocha.ghostty` once
+  (Settings > Terminal > Import Ghostty config) for the same colours and Nerd Font
 
 ### Daily Workflow
 ```bash

@@ -32,6 +32,7 @@ sudo dnf install -y \
 # Zsh prompt + plugins. starship may not be in the default repos:
 # fall back to `dnf copr enable atim/starship` or the official install script.
 sudo dnf install -y zsh-autosuggestions zsh-syntax-highlighting
+sudo dnf install -y difftastic git-absorb tldr || echo "⚠ some CLI extras not available via dnf"
 sudo dnf install -y atuin || echo "⚠ atuin not available via dnf; see docs.atuin.sh"
 sudo dnf install -y starship || echo "⚠ starship not available via dnf; install it manually (see starship.rs)"
 

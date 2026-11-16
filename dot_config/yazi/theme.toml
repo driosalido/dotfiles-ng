@@ -1,0 +1,4 @@
+# Catppuccin Mocha flavor (files pulled by chezmoi externals into flavors/)
+[flavor]
+dark = "catppuccin-mocha"
+light = "catppuccin-mocha"

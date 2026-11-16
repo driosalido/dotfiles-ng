@@ -53,12 +53,6 @@ bindkey '^X^E' edit-command-line
 bindkey '^[[Z' reverse-menu-complete                      # Shift+Tab
 WORDCHARS=${WORDCHARS//[\/]}
 
-# --- Colored man pages ------------------------------------------------------------
-export LESS_TERMCAP_mb=$'\e[1;31m' LESS_TERMCAP_md=$'\e[1;31m' LESS_TERMCAP_me=$'\e[0m' \
-       LESS_TERMCAP_so=$'\e[01;33m' LESS_TERMCAP_se=$'\e[0m' \
-       LESS_TERMCAP_us=$'\e[1;32m' LESS_TERMCAP_ue=$'\e[0m'
-export GROFF_NO_SGR=1
-
 # --- Plugins: fzf-tab, autosuggestions (syntax highlighting loads last, late/) -----
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=green'
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)

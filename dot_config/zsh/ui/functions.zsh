@@ -69,3 +69,17 @@ if [[ $OSTYPE == darwin* ]]; then
     }
 fi
 
+# yazi file manager; on quit, cd to the directory you were in
+y() {
+    local tmp cwd
+    tmp=$(mktemp -t yazi-cwd.XXXXXX)
+    yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [[ -n $cwd && $cwd != $PWD ]] && builtin cd -- "$cwd"
+    command rm -f -- "$tmp"
+}
+
+# Coloured --help: help git, help kubectl get
+help() {
+    "$@" --help 2>&1 | bat --plain --language=help
+}
