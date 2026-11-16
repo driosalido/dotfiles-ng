@@ -1,0 +1,23 @@
+# atuin: shell history in SQLite with context (dir, exit code, duration, host).
+# Ctrl-R opens the search UI; the up arrow keeps zsh's prefix search.
+# Docs: https://docs.atuin.sh/configuration/config/
+
+# Local only. To sync across machines (end-to-end encrypted), set sync_address to
+# a self-hosted server or keep the default, then `atuin register`/`atuin login`.
+auto_sync = false
+update_check = false
+
+search_mode = "fuzzy"
+filter_mode = "global"       # Ctrl-R inside the UI cycles: global / host / session / directory / workspace
+workspaces = true            # "workspace" filter = current git repo
+style = "compact"
+inline_height = 25
+show_preview = true
+enter_accept = false         # Enter puts the command on the line to review; it doesn't run it
+
+# Never record commands that start with a space, and drop lines that look like secrets
+secrets_filter = true
+history_filter = ["^ "]
+
+[theme]
+name = "catppuccin-mocha-mauve"

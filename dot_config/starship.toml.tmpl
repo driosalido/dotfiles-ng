@@ -2,6 +2,7 @@
 # its own line. Docs: https://starship.rs/config/
 "$schema" = 'https://starship.rs/config-schema.json'
 
+palette = "catppuccin_mocha"
 add_newline = true
 command_timeout = 500
 
@@ -14,7 +15,7 @@ symbol = " "
 
 [os]
 disabled = false
-style = "fg:white"
+style = "fg:text"
 
 [os.symbols]
 Macos = " "
@@ -22,7 +23,7 @@ Fedora = " "
 Linux = " "
 
 [directory]
-style = "bold fg:31"
+style = "bold fg:blue"
 truncation_length = 4
 truncate_to_repo = true
 read_only = " 󰌾"
@@ -30,43 +31,43 @@ read_only = " 󰌾"
 [git_branch]
 format = "[$symbol$branch(:$remote_branch)]($style) "
 symbol = " "
-style = "fg:76"
+style = "fg:green"
 
 [git_status]
 format = "([$all_status$ahead_behind]($style) )"
-style = "fg:178"
+style = "fg:yellow"
 
 [character]
-success_symbol = "[❯](fg:76)"
-error_symbol = "[❯](fg:196)"
-vimcmd_symbol = "[❮](fg:76)"
+success_symbol = "[❯](fg:green)"
+error_symbol = "[❯](fg:red)"
+vimcmd_symbol = "[❮](fg:green)"
 
 [status]
 disabled = false
 format = "[$symbol$status]($style) "
 symbol = "✘ "
-style = "fg:160"
+style = "fg:red"
 
 [cmd_duration]
 min_time = 3_000
 format = "[$duration]($style) "
-style = "fg:101"
+style = "fg:peach"
 
 [jobs]
 symbol = "⚙ "
-style = "fg:70"
+style = "fg:teal"
 
 [direnv]
 disabled = false
 format = "[$symbol$loaded]($style) "
 symbol = "direnv "
-style = "fg:178"
+style = "fg:yellow"
 
 # Python only when a virtualenv (venv/uv) is active, not on every *.py file.
 [python]
 format = '[${symbol}(${version} )(\($virtualenv\) )]($style)'
 symbol = " "
-style = "fg:37"
+style = "fg:sapphire"
 detect_extensions = []
 detect_files = []
 detect_folders = []
@@ -75,7 +76,7 @@ detect_folders = []
 [nodejs]
 format = "[$symbol($version )]($style)"
 symbol = " "
-style = "fg:70"
+style = "fg:teal"
 detect_extensions = []
 
 [terraform]
@@ -88,7 +89,7 @@ format = "[$symbol$workspace]($style) "
 [kubernetes]
 disabled = false
 format = '[󱃾 $context( /$namespace)]($style) '
-style = "fg:134"
+style = "fg:mauve"
 
 {{- /* Machine-local rules (work clusters, custom prod names) take precedence. Kept out of the repo. */}}
 {{- $local := joinPath .chezmoi.homeDir ".config/starship/contexts.local.toml" }}
@@ -103,7 +104,7 @@ context_alias = "$c"
 [[kubernetes.contexts]]   # GKE / Connect Gateway, prod
 context_pattern = '^(gke|connectgateway)_.*_(?P<c>[^_]*(prod|prd)[^_]*)$'
 context_alias = "$c"
-style = "bold fg:196"
+style = "bold fg:red"
 
 [[kubernetes.contexts]]   # GKE / Connect Gateway, other
 context_pattern = '^(gke|connectgateway)_.*_(?P<c>[^_]+)$'
@@ -112,7 +113,7 @@ context_alias = "$c"
 [[kubernetes.contexts]]   # EKS ARN, prod
 context_pattern = '^arn:aws:eks:.*:cluster/(?P<c>.*(prod|prd).*)$'
 context_alias = "$c"
-style = "bold fg:196"
+style = "bold fg:red"
 
 [[kubernetes.contexts]]   # EKS ARN, other
 context_pattern = '^arn:aws:eks:.*:cluster/(?P<c>.+)$'
@@ -120,11 +121,11 @@ context_alias = "$c"
 
 [[kubernetes.contexts]]   # any other prod-looking context
 context_pattern = '.*(prod|prd).*'
-style = "bold fg:196"
+style = "bold fg:red"
 
 [gcloud]
 format = '[󰊭 $project]($style) '
-style = "fg:32"
+style = "fg:sapphire"
 
 # gcloud has no per-project style, so flag prod projects with a separate marker.
 # Reads the active config file directly (no gcloud call, ~ms). Prod = name contains
@@ -147,7 +148,7 @@ case $p in *nonprod*) exit 1 ;; *prod*|*prd*) exit 0 ;; *) exit 1 ;; esac
 """
 shell = ["sh"]
 format = "[PROD ]($style)"
-style = "bold fg:196"
+style = "bold fg:red"
 
 # Linked git worktree marker.
 [custom.worktree]
@@ -155,13 +156,42 @@ when = '[ "$(git rev-parse --path-format=absolute --git-dir --git-common-dir 2>/
 require_repo = true
 shell = ["sh"]
 format = "[\\(wt\\) ]($style)"
-style = "fg:244"
+style = "fg:overlay1"
 
 [time]
 disabled = false
 format = "[$time]($style)"
 time_format = "%H:%M:%S"
-style = "fg:66"
+style = "fg:overlay2"
 
 [aws]
 format = '[$symbol($profile )(\($region\) )]($style)'
+
+# Catppuccin Mocha — https://github.com/catppuccin/starship
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"

@@ -2,6 +2,27 @@
 # On macOS the zsh plugins and fonts come from the Brewfile instead.
 # Force an update now: chezmoi apply --refresh-externals   (or: chezmoi apply -R)
 
+# Catppuccin themes (Mocha, mauve accent) for tools without a built-in one
+[".config/atuin/themes/catppuccin-mocha-mauve.toml"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/atuin/main/themes/mocha/catppuccin-mocha-mauve.toml"
+    refreshPeriod = "720h"
+
+[".config/eza/theme.yml"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/eza/main/themes/mocha/catppuccin-mocha-mauve.yml"
+    refreshPeriod = "720h"
+
+[".config/k9s/skins/catppuccin-mocha-transparent.yaml"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/k9s/main/dist/catppuccin-mocha-transparent.yaml"
+    refreshPeriod = "720h"
+
+[".config/lazygit/catppuccin-mocha.yml"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/catppuccin/lazygit/main/themes-mergable/mocha/mauve.yml"
+    refreshPeriod = "720h"
+
 {{- if .is_linux }}
 # fzf-tab (Homebrew provides it on macOS; no Fedora package).
 [".local/share/zsh/plugins/fzf-tab"]

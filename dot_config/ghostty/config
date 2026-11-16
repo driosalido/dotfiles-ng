@@ -1,0 +1,39 @@
+# Ghostty terminal. Docs: https://ghostty.org/docs/config  (reload: Cmd+Shift+,)
+
+# Catppuccin Mocha (dark). Fixed rather than following the macOS appearance: fzf, Starship,
+# eza, k9s, lazygit and atuin use Mocha colours and would be unreadable on Latte.
+theme = Catppuccin Mocha
+
+font-family = MesloLGS Nerd Font
+font-size = 14
+font-thicken = true
+adjust-cell-height = 10%
+
+window-padding-x = 10
+window-padding-y = 8
+window-padding-balance = true
+window-save-state = always
+macos-titlebar-style = tabs
+# Left Option acts as Alt: Alt+B/F/arrows move by word in zsh
+macos-option-as-alt = left
+
+cursor-style = bar
+cursor-style-blink = false
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+confirm-close-surface = false
+
+shell-integration-features = cursor,sudo,title
+
+# Quick terminal: drop-down terminal from anywhere (Ctrl+`)
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.15
+
+# Splits
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+alt+left=goto_split:left
+keybind = cmd+alt+right=goto_split:right
+keybind = cmd+alt+up=goto_split:top
+keybind = cmd+alt+down=goto_split:bottom

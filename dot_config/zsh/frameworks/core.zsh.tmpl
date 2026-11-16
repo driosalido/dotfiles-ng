@@ -94,7 +94,7 @@ if (( $+commands[starship] )); then
   _zsh_transient_prompt() {
     local p=$PROMPT rp=$RPROMPT
     # $? inside a zle widget isn't the last command's status; starship saves it.
-    local c=76; (( ${STARSHIP_CMD_STATUS:-0} )) && c=196
+    local c="#a6e3a1"; (( ${STARSHIP_CMD_STATUS:-0} )) && c="#f38ba8"   # Catppuccin green/red
     PROMPT="%F{$c}❯%f " RPROMPT=
     zle .reset-prompt && zle -R   # -R: redraw now, before PROMPT is restored
     PROMPT=$p RPROMPT=$rp
@@ -103,7 +103,7 @@ if (( $+commands[starship] )); then
   add-zle-hook-widget zle-line-finish _zsh_transient_prompt
 else
   print -u2 "zsh: starship not installed (brew install starship) — using a basic prompt"
-  PROMPT='%F{31}%~%f %(?.%F{76}.%F{196})❯%f '
+  PROMPT='%F{#89b4fa}%~%f %(?.%F{#a6e3a1}.%F{#f38ba8})❯%f '
 fi
 
 # --- Terminal title: directory when idle, command while running -------------------

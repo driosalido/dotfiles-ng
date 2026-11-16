@@ -9,7 +9,9 @@ Personal dotfiles configuration managed with [chezmoi](https://chezmoi.io/). Cro
 - 📁 **XDG compliant**: Follows XDG Base Directory Specification
 - 🎨 **Modern shell**: Modular zsh without a framework: Starship prompt, fzf-tab, autosuggestions, syntax highlighting
 - ⚡ **Fast startup**: ~0.1s (cached completions and Starship init, no framework)
-- 🛠 **Modern CLI tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta, direnv
+- 🛠 **Modern CLI tools**: fzf, zoxide, ripgrep, fd, bat, eza, delta, direnv, atuin
+- 🐈 **One theme everywhere**: Catppuccin Mocha in Ghostty, Starship, fzf, bat, delta, eza, k9s, lazygit and atuin
+- 👻 **Ghostty config**: Nerd Font, splits, drop-down quick terminal (`Ctrl+\``)
 - 🟢 **Node.js via fnm**: auto-switches version on `cd` (`.nvmrc` / `.node-version`)
 - 🔧 **Package management**: Automatic Homebrew installation with curated package list
 - 🔒 **Secrets**: Bitwarden + macOS Keychain + direnv, no plain-text secrets in `.envrc` files
@@ -111,7 +113,8 @@ Installers that append lines to `~/.zshrc` should have them moved into a module.
 
 ### Modern Shell Experience
 - **Smart suggestions**: Type any command and see green suggestions from your history
-- **Fuzzy search**: `Ctrl+R` history, `Ctrl+T` files, `Alt+C` directories
+- **History search**: `Ctrl+R` opens atuin (fuzzy, filter by directory/repo/session, exit codes); `Ctrl+R` again cycles filters; Enter puts the command on the line
+- **Fuzzy search**: `Ctrl+T` files, `Alt+C` directories (fzf)
 - **Smart navigation**: `z <directory>` jumps to frequently used directories
 - **Better commands**: `ls`/`ll`/`la`/`lt` → `eza`, `cat` → `bat`, `kubectl`/`k` → `kubecolor`
 - **Git aliases**: in the git config (`git st`, `git co`, `git cleanup`…)
