@@ -47,8 +47,11 @@ secure note "envrc:<name>"  ──sync──▶  cache "envrc:<name>#N"  ──�
  across machines)                                                       you enter the directory)
 ```
 
-- **Bitwarden** is the source of truth. Each project has a **secure note** named
-  `envrc:<name>` whose body is shell lines: `export VAR="value"`.
+- **Bitwarden** is the source of truth. Each project has an item named `envrc:<name>`
+  (legacy `ws/<name>` items also work) whose notes are env lines: `export VAR="value"`
+  (shell) or `VAR=value` (dotenv-style).
+- **Attachments**: item fields named `file:<attachment name>` whose value is a path
+  (e.g. `~/.config/foo/key.pem`) make `secrets sync` download that attachment there (mode 600).
 - **The macOS Keychain** holds a local copy. direnv reads it when you enter the directory,
   so day to day **you never unlock Bitwarden**.
 - **The `.envrc`** only has non-secret variables (URLs, IDs, users) plus a
@@ -73,7 +76,9 @@ Vaultwarden), the Bitwarden CLI, the macOS Keychain (`security`) and direnv.
 | `secrets sync [name...]` | Copies Bitwarden → Keychain (all `envrc:*` notes if no name) | Yes |
 | `secrets push <name> <file>` | Creates/updates the note from a file, then syncs it | Yes |
 | `secrets list` | Lists the `envrc:*` notes in Bitwarden | Yes |
-| `secrets get <name>` | Prints the Keychain cache (prints secrets!) | No |
+| `secrets env <name>` | Prints `export` lines from the Keychain cache, for `.envrc` or MCP launchers: `eval "$(secrets env <name>)"` (prints secrets!) | No |
+| `secrets get <name>` | Prints the cached notes verbatim (prints secrets!) | No |
+| `secrets adopt <name>` | Renames a legacy `ws/<name>` item to `envrc:<name>` (keeps attachments) | Yes |
 | `secrets forget <name>` | Deletes the Keychain cache (Bitwarden untouched) | No |
 
 Unlocking: commands that talk to Bitwarden run `bw unlock` themselves if there is no
