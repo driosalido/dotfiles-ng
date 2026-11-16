@@ -1,0 +1,10 @@
+#!/bin/sh
+# Usage (from a global hook): exec "$(dirname "$0")/_chain" "$(basename "$0")" "$@"
+# Runs the repository's own hook with that name.
+# core.hooksPath (global) makes git skip .git/hooks, which would silently disable
+# per-repo hooks (pre-commit framework, git-lfs, ...). Every global hook ends with this.
+hook=$1; shift
+dir=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0
+repo_hook="$dir/hooks/$hook"
+[ -x "$repo_hook" ] && exec "$repo_hook" "$@"
+exit 0

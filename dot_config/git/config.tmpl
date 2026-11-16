@@ -5,14 +5,39 @@
 [core]
     editor = {{ if lookPath "nvim" }}nvim{{ else }}vim{{ end }}
     excludesfile = ~/.config/git/ignore
-{{- if .is_macos }}
+    # Global hooks; each one also runs the repository's own hook (see hooks/_chain)
+    hooksPath = ~/.config/git/hooks
     autocrlf = input
-{{- else if .is_linux }}
-    autocrlf = input
+{{- if lookPath "delta" }}
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+
+[merge]
+    conflictStyle = zdiff3
 {{- end }}
 
 [init]
     defaultBranch = main
+
+[pull]
+    rebase = false
+
+[push]
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+    pruneTags = true
+
+[worktree]
+    # Linked worktrees use relative paths (portable across synced machines).
+    # Note: gitstatusd can't read these repos; p10k uses its git_fallback segment.
+    useRelativePaths = true
 
 [alias]
     st = status
@@ -22,3 +47,5 @@
     unstage = reset HEAD --
     last = log -1 HEAD
     visual = !gitk
+    # Delete local branches whose upstream is gone
+    cleanup = "!git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D"

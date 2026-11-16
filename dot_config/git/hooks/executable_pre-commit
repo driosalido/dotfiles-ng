@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Global pre-commit hook: Terraform/Terragrunt format checks, then the repo's own hook
+# Only runs checks if relevant files are staged
+
+set -e
+
+# Get list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Check for Terraform files (.tf)
+TF_FILES=$(echo "$STAGED_FILES" | grep '\.tf$' || true)
+if [ -n "$TF_FILES" ]; then
+    echo "Checking Terraform formatting..."
+
+    # Check if tofu or terraform is available
+    if command -v tofu &> /dev/null; then
+        TF_CMD="tofu"
+    elif command -v terraform &> /dev/null; then
+        TF_CMD="terraform"
+    else
+        echo "Warning: tofu/terraform not found, skipping format check"
+        TF_CMD=""
+    fi
+
+    if [ -n "$TF_CMD" ]; then
+        # Get unique directories containing .tf files
+        TF_DIRS=$(echo "$TF_FILES" | xargs -I {} dirname {} | sort -u)
+        for dir in $TF_DIRS; do
+            if [ -d "$dir" ]; then
+                if ! $TF_CMD fmt -check "$dir" > /dev/null 2>&1; then
+                    echo "Error: Terraform files not formatted in $dir"
+                    echo "Run: $TF_CMD fmt $dir"
+                    exit 1
+                fi
+            fi
+        done
+        echo "Terraform format OK"
+    fi
+fi
+
+# Check for Terragrunt files (.hcl in live/ directories)
+HCL_FILES=$(echo "$STAGED_FILES" | grep '\.hcl$' || true)
+if [ -n "$HCL_FILES" ]; then
+    if command -v terragrunt &> /dev/null; then
+        echo "Checking Terragrunt HCL formatting..."
+        # Terragrunt 0.90+ uses "hcl fmt --check", older versions use "hclfmt --check"
+        if ! terragrunt hcl fmt --check > /dev/null 2>&1; then
+            echo "Error: Terragrunt HCL files not formatted"
+            echo "Run: terragrunt hcl fmt"
+            exit 1
+        fi
+        echo "Terragrunt HCL format OK"
+    else
+        echo "Warning: terragrunt not found, skipping HCL format check"
+    fi
+fi
+
+# Chain to the repository's own pre-commit hook
+exec "$(dirname "$0")/_chain" "$(basename "$0")" "$@"
